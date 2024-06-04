@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using System.Linq;
 
 public static class TagHelper
 {
@@ -24,5 +25,10 @@ public static class TagHelper
             so.ApplyModifiedProperties();
             so.Update();
         }
+    }
+
+    public static bool TagExists(string tag)
+    {
+        return UnityEditorInternal.InternalEditorUtility.tags.Contains(tag);
     }
 }

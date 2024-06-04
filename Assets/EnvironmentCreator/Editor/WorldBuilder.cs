@@ -81,14 +81,14 @@ public class WorldBuilder : EditorWindow
         // Create a draggable object field
         objectField = new ObjectField("Parent Object") { objectType = typeof(GameObject) };
         objectField.value = parentOBJ;
-        try
-        {
-            parentOBJ.tag = "Editing";// This is so other scripts can access who is the parent object
-        } catch
+
+        // If the tag doesn't exist, create it
+        if (!TagHelper.TagExists("Editing"))
         {
             TagHelper.AddTag("Editing");
-            parentOBJ.tag = "Editing";
         }
+
+        parentOBJ.tag = "Editing";
         tilePlacement.parentTransform = parentOBJ.transform;
         objectField.RegisterValueChangedCallback(evt =>
         {
