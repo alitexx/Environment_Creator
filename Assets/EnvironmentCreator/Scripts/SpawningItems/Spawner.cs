@@ -64,24 +64,9 @@ public class TomeSpawner : Spawner
     }
 }
 
-public class NewCategorySpawner : Spawner
-{
-    public NewCategorySpawner() : base("NewCategoryFolder") { }
 
-    protected override string GetDefaultPrefab()
-    {
-        return "DefaultEntity";
-    }
-}
+//User defined Spawners go here:
 
-public class TestingSpawner : Spawner
-{
-    public TestingSpawner() : base("TestingFolder") { }
 
-    protected override string GetDefaultPrefab()
-    {
-        return "DefaultEntity";
-    }
-}//User defined Spawners go here:
 
 

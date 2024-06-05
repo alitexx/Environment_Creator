@@ -17,12 +17,6 @@ public enum TileCategory
 
     //Tomes spawn on these tiles
     TomeSpawner
-,
-    //NewCategory spawn on these tiles (USER DEFINED TILE CATEGORY)
-    NewCategorySpawner
-,
-    //Testing spawn on these tiles (USER DEFINED TILE CATEGORY)
-    TestingSpawner
 }
 
 
@@ -35,11 +29,6 @@ public class tileCategory : MonoBehaviour
     private Spawner enemySpawner = new EnemySpawner();
     private Spawner itemSpawner = new ItemSpawner();
     private Spawner tomeSpawner = new TomeSpawner();
-
-    private Spawner newcategorySpawner = new NewCategorySpawner();
-
-
-    private Spawner testingSpawner = new TestingSpawner();
 
     //User defined spawners above
 
@@ -92,12 +81,6 @@ public class tileCategory : MonoBehaviour
                 break;
             case TileCategory.TomeSpawner:
                 tomeSpawner.Spawn(objSpawnName, transform.position);
-                break;
-            case TileCategory.NewCategorySpawner:
-                newcategorySpawner.Spawn(objSpawnName, transform.position);
-                break;
-            case TileCategory.TestingSpawner:
-                testingSpawner.Spawn(objSpawnName, transform.position);
                 break;
             default:
                 break;

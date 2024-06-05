@@ -10,7 +10,9 @@ public class TileCategoryEditor : EditorWindow
     private string folderName = "NewCategoryFolder";
 
     private string[] userDefinedTileCategories; // For deletion
+
     private TileCategory selectedCategoryToDelete;
+
 
     // As of right now, this script does not check if another asset exists with the same name. This should be changed.
 
@@ -18,6 +20,7 @@ public class TileCategoryEditor : EditorWindow
     public static void ShowWindow()
     {
         GetWindow<TileCategoryEditor>("Tile Category Editor");
+        tileCategoryManagement.checkIfEmpty();
     }
 
     private void OnGUI()
@@ -60,28 +63,39 @@ public class TileCategoryEditor : EditorWindow
             }
             else if (EditorUtility.DisplayDialog("Confirm Deletion", "Are you sure you want to delete the tile category [" + selectedCategoryToDelete.ToString() + "]?", "Yes", "No"))
             {
-                DeleteTileCategory(selectedCategoryToDelete.ToString());
+                DeleteTileCategory(selectedCategoryToDelete.ToString().Replace("Spawner", ""));
             }
         }
     }
 
     private void CreateTileCategory()
     {
-        // Step 1: Create C# Script
+        // Step 1: Check if this is in tileCategoryManagement
+        var checkIfCreated = tileCategoryManagement.GetValue(categoryName);
+        if (checkIfCreated != null) // If this isn't null, then that means this category has been created. Halt everything.
+        {
+            Debug.LogError("There is already a tile category named [" + categoryName + "]. Please delete the existing [" + categoryName + "] tile category or choose a new name.");
+            return;
+        }
+
+        // Step 2: Add to tileCategoryManagement.cs
+        tileCategoryManagement.SetValue(categoryName, folderName);
+
+        // Step 3: Create C# Script
         string scriptPath = $"Assets/EnvironmentCreator/Scripts/SpawningItems/{categoryName}.cs";
         // The content of the new script (Nothing)
         string scriptContent = $"using UnityEngine;\n\npublic class {categoryName} : MonoBehaviour\n{{\n    // Your code here\n}}";
         File.WriteAllText(scriptPath, scriptContent);
         AssetDatabase.Refresh();
 
-        // Step 2: Create Folder
+        // Step 4: Create Folder
         string folderPath = $"Assets/EnvironmentCreator/Prefabs/{folderName}";
         if (!AssetDatabase.IsValidFolder(folderPath))
         {
             AssetDatabase.CreateFolder("Assets/EnvironmentCreator/Prefabs", folderName);
         }
 
-        // Step 3: Create Default Entity
+        // Step 5: Create Default Entity
         GameObject defaultEntity = new GameObject("DefaultEntity");
         defaultEntity.AddComponent(System.Type.GetType(categoryName));
         defaultEntity.AddComponent<FolderPlacement>();
@@ -97,16 +111,16 @@ public class TileCategoryEditor : EditorWindow
         PrefabUtility.SaveAsPrefabAsset(defaultEntity, $"{folderPath}/DefaultEntity.prefab");
         DestroyImmediate(defaultEntity);
 
-        // Step 4: Update TileCategory Enum
+        // Step 6: Update TileCategory Enum
         UpdateTileCategoryEnum(categoryName);
 
-        // Step 5: Update TileCategory Script
+        // Step 7: Update TileCategory Script
         UpdateTileCategoryScript(categoryName);
 
-        // Step 6: Update WorldBuilder Script
+        // Step 8: Update WorldBuilder Script
         UpdateWorldBuilderScript(categoryName, folderName);
 
-        // Step 7: Update Spawner Script
+        // Step 9: Update Spawner Script
         UpdateSpawnerScript(categoryName, folderName);
 
         AssetDatabase.Refresh();
@@ -189,31 +203,42 @@ public class TileCategoryEditor : EditorWindow
 
     private void DeleteTileCategory(string categoryName)
     {
-        // Step 1: Delete C# Script
-        string scriptPath = $"Assets/EnvironmentCreator/Scripts/SpawningItems/{categoryName.Replace("Spawner", "")}.cs";
+        // Step 1: Find folder associated with category
+        var folderName = tileCategoryManagement.GetValue(categoryName);
+        if (folderName == null)
+        {
+            Debug.LogError("Cannot find TileCategory named [" + categoryName + "] in dictionary.");
+            return;
+        }
+
+        // Step 2: Delete C# Script
+        string scriptPath = $"Assets/EnvironmentCreator/Scripts/SpawningItems/{categoryName}.cs";
         if (File.Exists(scriptPath))
         {
             File.Delete(scriptPath);
         }
 
-        // Step 2: Delete Folder
-        string folderPath = $"Assets/EnvironmentCreator/Prefabs/{categoryName.Replace("Spawner", "")}";
+        // Step 3: Delete Folder
+        string folderPath = $"Assets/EnvironmentCreator/Prefabs/{folderName}";
         if (AssetDatabase.IsValidFolder(folderPath))
         {
             FileUtil.DeleteFileOrDirectory(folderPath);
         }
 
-        // Step 3: Remove from TileCategory Enum
-        RemoveFromTileCategoryEnum(categoryName);
+        // Step 4: Remove from TileCategory Enum
+        RemoveFromTileCategoryEnum(categoryName+"Spawner");
 
-        // Step 4: Update TileCategory Script
+        // Step 5: Update TileCategory Script
         RemoveFromTileCategoryScript(categoryName);
 
-        // Step 5: Update WorldBuilder Script
-        RemoveFromWorldBuilderScript(categoryName);
+        // Step 6: Update WorldBuilder Script
+        RemoveFromWorldBuilderScript(categoryName, folderName);
 
-        // Step 6: Update Spawner Script
-        RemoveFromSpawnerScript(categoryName);
+        // Step 7: Update Spawner Script
+        RemoveFromSpawnerScript(categoryName, folderName);
+
+        // Step 8: Remove this tile category's spot in the dictionary
+        tileCategoryManagement.DeleteValue(categoryName);
 
         AssetDatabase.Refresh();
         UpdateUserDefinedTileCategories();
@@ -254,12 +279,12 @@ public class TileCategoryEditor : EditorWindow
         File.WriteAllText(scriptPath, scriptContent);
     }
 
-    private void RemoveFromWorldBuilderScript(string categoryName)
+    private void RemoveFromWorldBuilderScript(string categoryName, string folderName)
     {
         string scriptPath = "Assets/EnvironmentCreator/Editor/WorldBuilder.cs";
         string scriptContent = File.ReadAllText(scriptPath);
 
-        string caseStatement = $"case TileCategory.{categoryName}Spawner:\n                folderPath = \"Assets/EnvironmentCreator/Prefabs/{categoryName.Replace("Spawner", "")}\";\n                break;\n            ";
+        string caseStatement = $"case TileCategory.{categoryName}Spawner:\n                folderPath = \"Assets/EnvironmentCreator/Prefabs/{folderName}\";\n                break;\n            ";
         if (scriptContent.Contains(caseStatement))
         {
             scriptContent = scriptContent.Replace(caseStatement, "");
@@ -268,12 +293,11 @@ public class TileCategoryEditor : EditorWindow
         File.WriteAllText(scriptPath, scriptContent);
     }
 
-    private void RemoveFromSpawnerScript(string categoryName)
+    private void RemoveFromSpawnerScript(string categoryName, string folderName)
     {
         string scriptPath = "Assets/EnvironmentCreator/Scripts/SpawningItems/Spawner.cs";
         string scriptContent = File.ReadAllText(scriptPath);
-
-        string newClass = $"public class {categoryName}Spawner : Spawner\r\n{{\r\n    public {categoryName}Spawner() : base(\"{categoryName.Replace("Spawner", "")}\") {{ }}\r\n\r\n    protected override string GetDefaultPrefab()\r\n    {{\r\n        return \"DefaultEntity\";\r\n    }}\r\n}}";
+        string newClass = $"public class {categoryName}Spawner : Spawner\r\n{{\r\n    public {categoryName}Spawner() : base(\"{folderName}\") {{ }}\r\n\r\n    protected override string GetDefaultPrefab()\r\n    {{\r\n        return \"DefaultEntity\";\r\n    }}\r\n}}";
         if (scriptContent.Contains(newClass))
         {
             scriptContent = scriptContent.Replace(newClass, "");
