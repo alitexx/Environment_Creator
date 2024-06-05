@@ -34,19 +34,19 @@ public abstract class Spawner
     protected abstract string GetDefaultPrefab();
 }
 
-public class EnemySpawner : Spawner
+public class NPCSpawner : Spawner
 {
-    public EnemySpawner() : base("Enemies") { }
+    public NPCSpawner() : base("NPC") { }
 
     protected override string GetDefaultPrefab()
     {
-        return "DefaultEnemy";
+        return "DefaultNPC";
     }
 }
 
 public class ItemSpawner : Spawner
 {
-    public ItemSpawner() : base("Items") { }
+    public ItemSpawner() : base("Item") { }
 
     protected override string GetDefaultPrefab()
     {
@@ -56,13 +56,14 @@ public class ItemSpawner : Spawner
 
 public class TomeSpawner : Spawner
 {
-    public TomeSpawner() : base("Tomes") { }
+    public TomeSpawner() : base("Tome") { }
 
     protected override string GetDefaultPrefab()
     {
         return "DefaultTome";
     }
 }
+
 
 
 //User defined Spawners go here:

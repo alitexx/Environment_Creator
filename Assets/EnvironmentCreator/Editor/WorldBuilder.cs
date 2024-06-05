@@ -295,14 +295,14 @@ public class WorldBuilder : EditorWindow
             case TileCategory.Default:
                 folderPath = "Assets/EnvironmentCreator/Prefabs/Misc/DONOTCHANGE";
                 break;
-            case TileCategory.EnemySpawner:
-                folderPath = "Assets/EnvironmentCreator/Prefabs/Enemies";
+            case TileCategory.NPCSpawner:
+                folderPath = "Assets/EnvironmentCreator/Prefabs/NPC";
                 break;
             case TileCategory.ItemSpawner:
-                folderPath = "Assets/EnvironmentCreator/Prefabs/Items";
+                folderPath = "Assets/EnvironmentCreator/Prefabs/Item";
                 break;
             case TileCategory.TomeSpawner:
-                folderPath = "Assets/EnvironmentCreator/Prefabs/Tomes";
+                folderPath = "Assets/EnvironmentCreator/Prefabs/Tome";
                 break;
             default:
                 folderPath = "Assets/EnvironmentCreator/Prefabs/Misc/DONOTCHANGE";

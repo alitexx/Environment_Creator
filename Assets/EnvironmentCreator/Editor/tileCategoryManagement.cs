@@ -12,7 +12,6 @@ public static class tileCategoryManagement
     // Function to set a value in the dictionary
     public static void SetValue(string key, string value)
     {
-        //If there is nothing in this list, first set the default values
         if (TCfolderDict.ContainsKey(key))
         {
             TCfolderDict[key] = value;
@@ -38,6 +37,7 @@ public static class tileCategoryManagement
     // Function to get a value from the dictionary
     public static string GetValue(string key)
     {
+        Debug.Log(TCfolderDict);
         if (TCfolderDict.TryGetValue(key, out string value))
         {
             Debug.Log($"Retrieved value: {value} for key: {key}");
