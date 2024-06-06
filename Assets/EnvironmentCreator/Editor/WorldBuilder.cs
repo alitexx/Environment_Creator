@@ -360,8 +360,9 @@ public class WorldBuilder : EditorWindow
                     newPrefab.GetComponent<SpriteRenderer>().sprite = selectedSprite;
                     newPrefab.AddComponent<tileCategory>();
                     PrefabUtility.SaveAsPrefabAsset(newPrefab, "Assets/EnvironmentCreator/Prefabs/Tiles/" + selectedSprite.name + ".prefab");
-                    m_PlacedObjectPrefab = newPrefab;
                     DestroyImmediate(newPrefab);
+                    m_PlacedObjectPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/EnvironmentCreator/Prefabs/Tiles/" + selectedSprite.name + ".prefab");
+
                 }
             }
         }

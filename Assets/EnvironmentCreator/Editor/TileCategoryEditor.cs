@@ -95,7 +95,22 @@ public class TileCategoryEditor : EditorWindow
 
         // Step 3: Create Default Entity
         GameObject defaultEntity = new GameObject("DefaultEntity");
-        defaultEntity.AddComponent(System.Type.GetType(categoryName));
+        // Load the script asset
+        MonoScript scriptAsset = AssetDatabase.LoadAssetAtPath<MonoScript>(scriptPath);
+        if (scriptAsset != null)
+        {
+            // Get the script's type
+            System.Type scriptType = scriptAsset.GetClass();
+            if (scriptType != null)
+            {
+                // Add the component of the script's type
+                defaultEntity.AddComponent(scriptType);
+            }
+            else
+            {
+                Debug.LogError("Failed to get script type for " + categoryName);
+            }
+        }
         defaultEntity.AddComponent<FolderPlacement>();
         try
         {
@@ -215,11 +230,11 @@ public class TileCategoryEditor : EditorWindow
             FileUtil.DeleteFileOrDirectory(folderPath);
         }
 
-        // Step 3: Update TileCategory Script
-        RemoveFromTileCategoryScript(categoryName);
-
-        // Step 4: Update WorldBuilder Script
+        // Step 3: Update WorldBuilder Script
         RemoveFromWorldBuilderScript(categoryName);
+
+        // Step 4: Update TileCategory Script
+        RemoveFromTileCategoryScript(categoryName);
 
         // Step 5: Update Spawner Script
         RemoveFromSpawnerScript(categoryName);
@@ -270,8 +285,7 @@ public class TileCategoryEditor : EditorWindow
     {
         string scriptPath = "Assets/EnvironmentCreator/Editor/WorldBuilder.cs";
         string scriptContent = File.ReadAllText(scriptPath);
-
-        string caseStatement = $"case TileCategory.{categoryName}Spawner:\n                folderPath = \"Assets/EnvironmentCreator/Prefabs/{categoryName}\";\n                break;\n            ";
+        string caseStatement = $"\r\n            case TileCategory.{categoryName}Spawner:\r\n                folderPath = \"Assets/EnvironmentCreator/Prefabs/{categoryName}\";\r\n                break;";
         if (scriptContent.Contains(caseStatement))
         {
             scriptContent = scriptContent.Replace(caseStatement, "");
