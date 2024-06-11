@@ -155,8 +155,28 @@ public class CharacterCreationEditor : EditorWindow
 
         playerMovement.walkSpeed = walkSpeed;
 
+        //Move player to where they need to be according to startPosition
+        if(startPosition == null)
+        {
+            Debug.LogWarning("Start position has not been defined. Player will start at the origin [0, 0, 0].");
+        } else
+        {
+            playerCharacterPrefab.transform.position = startPosition.transform.position;
+        }
+
         PrefabUtility.SaveAsPrefabAsset(playerCharacterPrefab, prefabPath + "/PlayerCharacter.prefab");
         //DestroyImmediate(playerCharacterPrefab);
+
+        //Add Camera Movement Script onto camera
+        GameObject camera = GameObject.FindGameObjectWithTag("MainCamera");
+        if (camera == null)
+        {
+            Debug.LogError("Camera has been deleted. Please define a Main Camera with the tag [MainCamera] and add component [CameraMovement].");
+            return;
+        }
+        CameraMovement camMovement = camera.AddComponent<CameraMovement>();
+        camMovement.player = playerCharacterPrefab.transform;
+
     }
 
     private void CreateStatesAndTransitions(AnimatorController controller)
@@ -165,18 +185,30 @@ public class CharacterCreationEditor : EditorWindow
 
         // Create states
         AnimatorState[] states = new AnimatorState[animations.Length];
+
+        //Define Idle animation state first (default anim state)
+
+        states[0] = rootStateMachine.AddState(FindAnimationName(4));
+        states[0].motion = animations[4];
+        int offsetAdd = 1;
+        //Define all animation states in animator
         for (int i = 0; i < animations.Length; i++)
         {
-            states[i] = rootStateMachine.AddState("State" + i);
-            states[i].motion = animations[i];
+            if (i == 4)
+            {
+                offsetAdd = 0;
+                continue;
+            }
+            states[i+offsetAdd] = rootStateMachine.AddState(FindAnimationName(i));
+            states[i+offsetAdd].motion = animations[i];
         }
 
         // Create transitions based on conditions
-        AddTransition(rootStateMachine, rootStateMachine.defaultState, states[0], "Horizontal", -0.5f, true, "Vertical", 0.5f, false);  // North West
-        AddTransition(rootStateMachine, rootStateMachine.defaultState, states[1], "Vertical", 0.5f, false);                          // North
-        AddTransition(rootStateMachine, rootStateMachine.defaultState, states[2], "Horizontal", 0.5f, false, "Vertical", 0.5f, false); // North East
-        AddTransition(rootStateMachine, rootStateMachine.defaultState, states[3], "Horizontal", -0.5f, false);                        // West
-        AddTransition(rootStateMachine, rootStateMachine.defaultState, states[4], "Speed", 0.15f, true);                          // Idle
+        AddTransition(rootStateMachine, rootStateMachine.defaultState, states[0], "Speed", 0.15f, true);                          // Idle
+        AddTransition(rootStateMachine, rootStateMachine.defaultState, states[1], "Horizontal", -0.5f, true, "Vertical", 0.5f, false);  // North West
+        AddTransition(rootStateMachine, rootStateMachine.defaultState, states[2], "Vertical", 0.5f, false);                          // North
+        AddTransition(rootStateMachine, rootStateMachine.defaultState, states[3], "Horizontal", 0.5f, false, "Vertical", 0.5f, false); // North East
+        AddTransition(rootStateMachine, rootStateMachine.defaultState, states[4], "Horizontal", -0.5f, false);                        // West
         AddTransition(rootStateMachine, rootStateMachine.defaultState, states[5], "Horizontal", 0.5f, false);                        // East
         AddTransition(rootStateMachine, rootStateMachine.defaultState, states[6], "Horizontal", -0.5f, true, "Vertical", -0.5f, false); // South West
         AddTransition(rootStateMachine, rootStateMachine.defaultState, states[7], "Vertical", -0.5f, false);                          // South
@@ -185,11 +217,11 @@ public class CharacterCreationEditor : EditorWindow
         // Add transitions to idle state from any state
         for (int i = 0; i < states.Length; i++)
         {
-            if (i == 4)
+            if (i == 0)
             {
                 continue;
             }
-            AddTransitionToIdle(rootStateMachine, states[i], states[4]);
+            AddTransitionToIdle(rootStateMachine, states[i], states[0]);
         }
     }
 
@@ -233,6 +265,33 @@ public class CharacterCreationEditor : EditorWindow
 
         // Clear all parameters
         animatorController.parameters = new AnimatorControllerParameter[0];
+    }
+
+    private string FindAnimationName(int iteration)
+    {
+        switch (iteration)
+        {
+            case 0:
+                return "North West";
+            case 1:
+                return "North";
+            case 2:
+                return "North East";
+            case 3:
+                return "West";
+            case 4:
+                return "Idle";
+            case 5:
+                return "East";
+            case 6:
+                return "South West";
+            case 7:
+                return "South";
+            case 8:
+                return "South East";
+            default:
+                return "???";
+        }
     }
 
 }

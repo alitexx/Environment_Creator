@@ -6,6 +6,11 @@ public class PlayerMovement : MonoBehaviour
     public Animator animator;
     private Vector2 movement;
 
+    private void Start()
+    {
+        animator = GetComponent<Animator>();
+    }
+
     void Update()
     {
         // Get input from horizontal and vertical axis
