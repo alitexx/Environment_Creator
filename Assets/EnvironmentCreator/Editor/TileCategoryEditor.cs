@@ -112,15 +112,14 @@ public class TileCategoryEditor : EditorWindow
             }
         }
         defaultEntity.AddComponent<FolderPlacement>();
-        try
-        {
-            defaultEntity.tag = categoryName; // This is so other scripts can access who is the parent object
-        }
-        catch
+
+        // If the tag doesn't exist, create it
+        if (!TagHelper.TagExists(categoryName))
         {
             TagHelper.AddTag(categoryName);
-            defaultEntity.tag = categoryName;
         }
+        defaultEntity.tag = categoryName;
+
         PrefabUtility.SaveAsPrefabAsset(defaultEntity, $"{folderPath}/DefaultEntity.prefab");
         DestroyImmediate(defaultEntity);
 

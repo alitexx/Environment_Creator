@@ -24,6 +24,7 @@ public abstract class Spawner
             GameObject spawnedItem = Object.Instantiate(prefab, spawnPosition, Quaternion.identity);
             spawnedItem.name = prefabName;
             spawnedItem.GetComponent<FolderPlacement>().PlaceInFolder(prefabFolder);
+
         }
         else
         {

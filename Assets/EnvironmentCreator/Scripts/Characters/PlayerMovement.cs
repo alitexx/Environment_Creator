@@ -8,14 +8,28 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        // Get input from horizontal and vertical axis
         movement.x = Input.GetAxis("Horizontal");
         movement.y = Input.GetAxis("Vertical");
 
-        if (movement != Vector2.zero)
+        // Normalize the movement vector to prevent faster diagonal movement
+        Vector3 move = new Vector3(movement.x, 0, movement.y).normalized;
+
+        // If there is movement input
+        if (move != Vector3.zero)
         {
+            // Move the character
+            transform.Translate(move * walkSpeed * Time.deltaTime, Space.World);
+
+            // Update animator parameters
             animator.SetFloat("Horizontal", movement.x);
             animator.SetFloat("Vertical", movement.y);
-            animator.SetFloat("Speed", movement.sqrMagnitude);
+            animator.SetFloat("Speed", move.sqrMagnitude);
+        }
+        else
+        {
+            // If there is no movement, set speed to 0 in animator
+            animator.SetFloat("Speed", 0);
         }
     }
 
@@ -23,6 +37,6 @@ public class PlayerMovement : MonoBehaviour
     {
         walkSpeed = speed;
         // Assign animation clips to animator here
+        // I did this elsewhere oops
     }
 }
-
