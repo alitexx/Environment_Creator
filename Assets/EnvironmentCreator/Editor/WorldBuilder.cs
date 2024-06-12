@@ -145,7 +145,7 @@ public class WorldBuilder : EditorWindow
         var label3 = new Label("\n <b> Choose a tile:</b>");
         root.Add(label3);
 
-        string folderPath = "Assets/EnvironmentCreator/Images"; // Set your folder path here
+        string folderPath = "Assets/EnvironmentCreator/Images/Tiles"; // Set your folder path here
         string[] searchFilters = { "t:Sprite" }; // Search only for sprites
 
         // Get a list of all sprites in the specified folder.
