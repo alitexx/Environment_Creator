@@ -13,6 +13,17 @@ public class CharacterCreationEditor : EditorWindow
     private float reach = 1f;
     private RectTransform startPosition;
 
+    // NPC Editor variables
+    private GameObject npcGameObject;
+    private bool canMove = false;
+    private float movementSpeed = 1f;
+    private float moveFrequency = 1f;
+    private AnimationClip[] npcAnimations = new AnimationClip[9];
+    private bool canInteract = false;
+    private GameObject interactionPopupBox;
+    private string interactionText = "";
+    private bool updatePrefab = false;
+
     [MenuItem("Window/Environment Creator/Character Creation")]
     public static void ShowWindow()
     {
@@ -21,15 +32,6 @@ public class CharacterCreationEditor : EditorWindow
 
     private void OnGUI()
     {
-
-        foreach (var existingTag in UnityEditorInternal.InternalEditorUtility.tags)
-        {
-            if (existingTag == "PlayerCharacter")
-            {
-                playerCharacterPrefab = GameObject.FindGameObjectWithTag("PlayerCharacter");
-            }
-        }
-
         GUILayout.Label("Character Creation", EditorStyles.boldLabel);
 
         includeMC = EditorGUILayout.Toggle("Include Main Character", includeMC);
@@ -71,6 +73,125 @@ public class CharacterCreationEditor : EditorWindow
             }
         }
 
+
+        ///NPC EDITOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+        GUILayout.Space(20);
+        GUILayout.Label("NPC Editor", EditorStyles.boldLabel);
+
+        npcGameObject = (GameObject)EditorGUILayout.ObjectField("NPC GameObject", npcGameObject, typeof(GameObject), true);
+
+        if (npcGameObject != null)
+        {
+            canMove = EditorGUILayout.Toggle("Can Move", canMove);
+
+            if (canMove)
+            {
+                movementSpeed = EditorGUILayout.FloatField("Movement Speed", movementSpeed);
+                moveFrequency = EditorGUILayout.FloatField("Move Frequency", moveFrequency);
+
+                GUILayout.Label("NPC Animations", EditorStyles.boldLabel);
+
+                EditorGUILayout.BeginVertical();
+
+                for (int i = 0; i < 3; i++)
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    for (int j = 0; j < 3; j++)
+                    {
+                        int index = i * 3 + j;
+                        displayLabel(index);
+                        npcAnimations[index] = (AnimationClip)EditorGUILayout.ObjectField(npcAnimations[index], typeof(AnimationClip), false);
+                    }
+                    EditorGUILayout.EndHorizontal();
+                }
+
+                EditorGUILayout.EndVertical();
+            }
+
+            canInteract = EditorGUILayout.Toggle("Can Interact", canInteract);
+
+            if (canInteract)
+            {
+                interactionPopupBox = (GameObject)EditorGUILayout.ObjectField("Interaction Popup Box", interactionPopupBox, typeof(GameObject), true);
+                interactionText = EditorGUILayout.TextArea(interactionText, GUILayout.Height(100));
+            }
+
+            if (GUILayout.Button("Update this NPC"))
+            {
+                updatePrefab = false;
+                UpdateNPC();
+            }
+
+            if (GUILayout.Button("Update all NPCs of this type"))
+            {
+                updatePrefab = true;
+                UpdateNPC();
+            }
+        }
+    }
+
+    private void UpdateNPC()
+    {
+        if(canMove)
+        {
+            NPCMovement npcmovement = npcGameObject.AddComponent<NPCMovement>();
+            npcmovement.movementSpeed = movementSpeed;
+            npcmovement.movementFrequency = moveFrequency;
+            string prefabPath = "Assets/EnvironmentCreator/Prefabs/NPC";
+            Animator animator = npcGameObject.AddComponent<Animator>();
+
+            // Implementation for updating this specific NPC game object
+            AnimatorController animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(prefabPath + "/PlayerAnimController.controller");
+            if (animatorController != null)
+            {
+                ClearAnimatorController(animatorController);
+            }
+            else
+            {
+                // Create a new Animator Controller
+                animatorController = AnimatorController.CreateAnimatorControllerAtPath(prefabPath + "/PlayerAnimController.controller");
+            }
+
+
+            // Add float parameters to the Animator Controller
+            animatorController.AddParameter("Horizontal", AnimatorControllerParameterType.Float);
+            animatorController.AddParameter("Vertical", AnimatorControllerParameterType.Float);
+            animatorController.AddParameter("Speed", AnimatorControllerParameterType.Float);
+
+            CreateStatesAndTransitions(animatorController, npcAnimations);
+
+            // Assign the new Animator Controller to the Animator component
+            animator.runtimeAnimatorController = animatorController;
+        }
+        if(canInteract)
+        {
+            NPCInteract npcinteract = npcGameObject.AddComponent<NPCInteract>();
+            npcinteract.popup = interactionPopupBox;
+            npcinteract.popuptext = interactionText;
+        }
+
+        // If the tag doesn't exist, create it
+        if (!TagHelper.TagExists("NPC"))
+        {
+            TagHelper.AddTag("NPC");
+        }
+        npcGameObject.tag = "NPC";
+
+
+        //If we should update the prefab too, update prefab
+        if(updatePrefab)
+        {
+            UpdateAllNPCsOfType();
+        }
+    }
+
+    private void UpdateAllNPCsOfType()
+    {
+        // Implementation for updating all NPCs of this type (prefab)
+        string prefabPath = "Assets/EnvironmentCreator/Prefabs/NPC";
+        PrefabUtility.SaveAsPrefabAsset(npcGameObject, prefabPath + "/" + npcGameObject.name + ".prefab");
 
     }
 
@@ -136,7 +257,7 @@ public class CharacterCreationEditor : EditorWindow
         animatorController.AddParameter("Vertical", AnimatorControllerParameterType.Float);
         animatorController.AddParameter("Speed", AnimatorControllerParameterType.Float);
 
-        CreateStatesAndTransitions(animatorController);
+        CreateStatesAndTransitions(animatorController, animations);
 
         // Assign the new Animator Controller to the Animator component
         animator.runtimeAnimatorController = animatorController;
@@ -179,7 +300,7 @@ public class CharacterCreationEditor : EditorWindow
 
     }
 
-    private void CreateStatesAndTransitions(AnimatorController controller)
+    private void CreateStatesAndTransitions(AnimatorController controller, AnimationClip[] animations)
     {
         AnimatorStateMachine rootStateMachine = controller.layers[0].stateMachine;
 
