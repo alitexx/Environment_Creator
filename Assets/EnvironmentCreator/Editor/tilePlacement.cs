@@ -18,36 +18,52 @@ public class tilePlacement
     public Bounds placementBounds;
 
     // Calculate the nearest valid position for placing a tile
-    public Vector3 CheckTileValidity(Vector3 posToPlace)
+    public Vector3 CheckTileValidity(Vector3 posToPlace, string tileName)
     {
+
+        // Extract the tile size from the name (assuming format is (WxH) Name)
+        string[] parts = tileName.Split(')'); //Remove everything after the closing parenthesis
+        string sizePart = parts[0] + ")"; // (WxH) (Add back the ending parenthesis for trimming/consistency)
+        string[] dimensions = sizePart.Trim('(', ')').Split('x');
+        int tileWidth = int.Parse(dimensions[0]);
+        int tileHeight = int.Parse(dimensions[1]);
+
         // Ensure that the position is within the placement bounds
         if (!placementBounds.Contains(posToPlace))
         {
             Debug.LogWarning("Position is outside of placement bounds.");
             return new Vector3(0.3939f, 0, 0);
         }
-
         // Calculate the nearest valid position based on grid dimensions
         float xSnap = (Mathf.Round((posToPlace.x) / xDimension) * xDimension);
         float ySnap = (Mathf.Round((posToPlace.y) / yDimension) * yDimension);
 
         //determines if the picture is off centered or not
         // 1 means that its off centered, 0 means its not
-        Debug.Log(Mathf.Abs((xSnap/xDimension)%2));
+        Debug.Log(Mathf.Abs((xSnap / xDimension) % 2));
 
         Debug.Log(Mathf.Abs((ySnap / yDimension) % 2));
 
-        //wrong space vertically
-        if (Mathf.Abs((ySnap / yDimension) % 2) >= 0.9f && Mathf.Abs((xSnap / xDimension) % 2) == 0)
+        // If this tile is a square use square logic
+
+        if (true)
         {
-            //xSnap = (Mathf.Round((posToPlace.x) / (xDimension*2)) * (xDimension*2));
-            ySnap = (Mathf.Round((posToPlace.y) / (yDimension*2)) * (yDimension*2));
-            //wrong space horizontally
-        } else if (Mathf.Abs((ySnap / yDimension) % 2) == 0 && Mathf.Abs((xSnap / xDimension) % 2) >= 0.9f)
+            //wrong space vertically
+            if (Mathf.Abs((ySnap / yDimension) % 2) >= 0.9f && Mathf.Abs((xSnap / xDimension) % 2) == 0)
+            {
+                ySnap = (Mathf.Round((posToPlace.y) / (yDimension * 2)) * (yDimension * 2));
+                //wrong space horizontally
+            }
+            else if (Mathf.Abs((ySnap / yDimension) % 2) == 0 && Mathf.Abs((xSnap / xDimension) % 2) >= 0.9f)
+            {
+                //this sprite is off center. Delete it! Kill it!!
+                xSnap = (Mathf.Round((posToPlace.x) / (xDimension * 2)) * (xDimension * 2));
+            }
+        } else
         {
-            //this sprite is off center. Delete it! Kill it!!
-            xSnap = (Mathf.Round((posToPlace.x) / (xDimension * 2)) * (xDimension * 2));
-            //ySnap = (Mathf.Round((posToPlace.y) / (yDimension * 2)) * (yDimension * 2));
+            // Adjust for tile size to center it correctly
+            //xSnap += (tileWidth - 1) * xDimension / 2;
+            //ySnap += (tileHeight - 1) * yDimension / 2;
         }
 
         // Return the nearest valid position
@@ -55,9 +71,17 @@ public class tilePlacement
     }
     
     // this runs BEFORE the tile is placed. So, if a user wants to place a tile it doesn't check the one they're actively putting down (if that makes sense)
-    public GameObject isPlacingOnOccupiedSpace(Vector3 position)
+    public GameObject isPlacingOnOccupiedSpace(Vector3 position, string tileName)
     {
-        foreach(Transform childTransform in parentTransform)
+
+        // Extract the tile size from the name (assuming format is (WxH) Name)
+        string[] parts = tileName.Split(')'); //Remove everything after the closing parenthesis
+        string sizePart = parts[0] + ")"; // (WxH) (Add back the ending parenthesis for trimming/consistency)
+        string[] dimensions = sizePart.Trim('(', ')').Split('x');
+        int tileWidth = int.Parse(dimensions[0]);
+        int tileHeight = int.Parse(dimensions[1]);
+
+        foreach (Transform childTransform in parentTransform)
         {
             if (childTransform == null) continue;
             if (childTransform.position == position)

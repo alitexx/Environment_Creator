@@ -92,7 +92,11 @@ public class WorldBuilder : EditorWindow
         tilePlacement.parentTransform = parentOBJ.transform;
         objectField.RegisterValueChangedCallback(evt =>
         {
-            parentOBJ.tag = null;
+            //User may have deleted the parent object, check if it exists first
+            if (parentOBJ != null)
+            {
+                parentOBJ.tag = "Untagged";
+            }
             parentOBJ = evt.newValue as GameObject;
             parentOBJ.tag = "Editing";
             tilePlacement.parentTransform = parentOBJ.transform;
@@ -376,10 +380,10 @@ public class WorldBuilder : EditorWindow
             Vector3 position = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition).origin;
 
             // Check the validity of the position
-            Vector3 validPosition = tilePlacement.CheckTileValidity(position);
+            Vector3 validPosition = tilePlacement.CheckTileValidity(position, m_PlacedObjectPrefab.name);
             if (validPosition.x != 0.3939f)
             {
-                GameObject tileBelow = tilePlacement.isPlacingOnOccupiedSpace(validPosition);
+                GameObject tileBelow = tilePlacement.isPlacingOnOccupiedSpace(validPosition, m_PlacedObjectPrefab.name);
 
                 //if there is a tile below it AND it is being placed on the same layer, delete it.
                 if (tileBelow != null && tileBelow.GetComponent<SpriteRenderer>().sortingOrder == tileLayer)
