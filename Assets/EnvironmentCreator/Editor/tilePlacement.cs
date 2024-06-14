@@ -40,30 +40,54 @@ public class tilePlacement
 
         //determines if the picture is off centered or not
         // 1 means that its off centered, 0 means its not
-        Debug.Log(Mathf.Abs((xSnap / xDimension) % 2));
+        //Debug.Log(Mathf.Abs((xSnap / xDimension) % 2));
 
-        Debug.Log(Mathf.Abs((ySnap / yDimension) % 2));
+        //Debug.Log(Mathf.Abs((ySnap / yDimension) % 2));
 
         // If this tile is a square use square logic
 
-        if (true)
+        if (tileHeight == tileWidth)
         {
-            //wrong space vertically
+            // Wrong space vertically
             if (Mathf.Abs((ySnap / yDimension) % 2) >= 0.9f && Mathf.Abs((xSnap / xDimension) % 2) == 0)
             {
-                ySnap = (Mathf.Round((posToPlace.y) / (yDimension * 2)) * (yDimension * 2));
-                //wrong space horizontally
+                ySnap = Mathf.Round(posToPlace.y / (yDimension * 2)) * (yDimension * 2);
             }
+            // Wrong space horizontally
             else if (Mathf.Abs((ySnap / yDimension) % 2) == 0 && Mathf.Abs((xSnap / xDimension) % 2) >= 0.9f)
             {
-                //this sprite is off center. Delete it! Kill it!!
-                xSnap = (Mathf.Round((posToPlace.x) / (xDimension * 2)) * (xDimension * 2));
+                xSnap = Mathf.Round(posToPlace.x / (xDimension * 2)) * (xDimension * 2);
             }
-        } else
+        }
+        else
         {
+            xSnap += (((tileWidth - 1) * xDimension) / tileWidth) + (xDimension / tileWidth);
+            ySnap += (((tileHeight - 1) * yDimension) / tileHeight) - (yDimension / tileHeight);
             // Adjust for tile size to center it correctly
-            //xSnap += (tileWidth - 1) * xDimension / 2;
-            //ySnap += (tileHeight - 1) * yDimension / 2;
+            if (tileHeight >= 1)
+            {
+                xSnap += (((tileWidth - 1) * xDimension) / 2) + (xDimension / 2);
+            } else if (tileWidth >= 1)
+            {
+                ySnap += (((tileHeight - 1) * yDimension) / 2) - (yDimension / 2);
+            }
+
+            // Wrong space vertically
+            if (Mathf.Abs(Mathf.Round((posToPlace.y / yDimension) % 2)) == 0 && Mathf.Abs(Mathf.Round((posToPlace.x / xDimension) % 2)) == 0)
+            {
+                ySnap = (Mathf.Round((posToPlace.y) / yDimension) * yDimension) + (((tileHeight - 1) * yDimension) / tileHeight*2) - (yDimension / tileHeight*2);
+            }
+            // Wrong space horizontally
+            else if (Mathf.Abs(Mathf.Round((posToPlace.y / yDimension) % 2)) >= 0.9f && Mathf.Abs(Mathf.Round((posToPlace.x / xDimension)%2)) >= 0.9f)
+            {
+                xSnap = (Mathf.Round((posToPlace.x) / xDimension) * xDimension) + (((tileWidth - 1) * xDimension) / tileWidth*2) + (xDimension / tileWidth*2);
+            }
+
+            //determines if the picture is off centered or not
+            // 1 means that its off centered, 0 means its not
+            Debug.Log("X = " + (Mathf.Round((posToPlace.x) / xDimension)%2));
+
+            Debug.Log("Y = " + (Mathf.Round((posToPlace.y) / yDimension)%2));
         }
 
         // Return the nearest valid position
