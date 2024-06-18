@@ -44,11 +44,6 @@ public class WorldBuilder : EditorWindow
     private int tileLayer = 0;
 
 
-    //Tiles wide/tall
-
-    public int tilesWide = 1;
-    public int tilesHigh = 2;
-
     private IntegerField intFieldX;
     private IntegerField intFieldY;
 
@@ -173,32 +168,6 @@ public class WorldBuilder : EditorWindow
 
         m_RightPane = new ScrollView(ScrollViewMode.VerticalAndHorizontal);
         splitView.Add(m_RightPane);
-
-        // Create an integer field for integer input
-        intFieldX = new IntegerField("Tiles Wide")
-        {
-            value = tilesWide // Set initial value
-        };
-        intFieldX.RegisterValueChangedCallback(evt =>
-        {
-            tilesWide = evt.newValue; // Update the integer value
-        });
-
-        // Add intFieldX to the m_RightPane's content container
-        m_RightPane.contentContainer.Add(intFieldX);
-
-        intFieldY = new IntegerField("Tiles High")
-        {
-            value = tilesHigh // Set initial value
-        };
-        intFieldY.RegisterValueChangedCallback(evt =>
-        {
-            tilesHigh = evt.newValue; // Update the integer value
-        });
-
-        // Add intFieldY to the m_RightPane's content container
-        m_RightPane.contentContainer.Add(intFieldY);
-
 
         // Initialize the list view with all sprites' names.
         leftPane.makeItem = () => new Label();
