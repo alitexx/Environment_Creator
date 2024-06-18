@@ -87,7 +87,7 @@ public class tilePlacement
         }
         else
         {
-            xSnap += (((tileWidth - 1) * xDimension) / tileWidth) + (xDimension * (1f+(0.5f * Mathf.Pow(2, tileHeight - 2))));
+            xSnap += (((tileWidth - 1) * xDimension) / tileWidth) + (xDimension * (1+(0.5f * Mathf.Pow(2, tileHeight - 2))));
             ySnap += (((tileHeight - 1) * yDimension) / tileHeight) - (yDimension * (1+((tileHeight-1)*0.5f)));
             // Adjust for tile size to center it correctly
             if (tileHeight <= 1)
@@ -99,6 +99,13 @@ public class tilePlacement
                 ySnap += (((tileHeight) * yDimension) / 2);
             }
 
+
+            if (tileWidth > tileHeight)
+            {
+                ySnap += (((tileHeight) * yDimension));
+                xSnap -= (((tileWidth) * xDimension));
+
+            }
 
             Debug.Log("X = " + (Mathf.Abs((xSnap / xDimension) % (2))));
 
