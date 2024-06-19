@@ -6,6 +6,8 @@ public class FolderPlacement : MonoBehaviour
 {
     // Parent GameObject, technically the one we are currently editing
     public GameObject parentOBJ;
+    // This is what specific tile this item is linked to. Some tile categories don't need this information, but some do. (namely Pop Up)
+    public GameObject associatedGameObject;
     private GameObject childWithTag;
 
     public void PlaceInFolder(string folderName)

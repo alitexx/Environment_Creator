@@ -12,7 +12,7 @@ public class NPCInteract : MonoBehaviour
 
     private void Start()
     {
-        player = GameObject.FindGameObjectWithTag("MainCharacter");
+        player = GameObject.FindGameObjectWithTag("PlayerCharacter");
         range = player.GetComponent<CharacterData>().reach;
     }
 

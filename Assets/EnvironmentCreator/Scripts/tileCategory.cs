@@ -85,19 +85,19 @@ public class tileCategory : MonoBehaviour
             case TileCategory.Default:
                 break;
             case TileCategory.NPCSpawner:
-                npcSpawner.Spawn(objSpawnName, transform.position);
+                npcSpawner.Spawn(objSpawnName, transform.position, this.gameObject);
                 break;
             case TileCategory.ItemSpawner:
-                itemSpawner.Spawn(objSpawnName, transform.position);
+                itemSpawner.Spawn(objSpawnName, transform.position, this.gameObject);
                 break;
             case TileCategory.TomeSpawner:
-                tomeSpawner.Spawn(objSpawnName, transform.position);
+                tomeSpawner.Spawn(objSpawnName, transform.position, this.gameObject);
                 break;
             case TileCategory.PopUpSpawner:
-                popupSpawner.Spawn(objSpawnName, transform.position);
+                popupSpawner.Spawn(objSpawnName, transform.position, this.gameObject);
                 break;
             case TileCategory.TeleportSpawner:
-                teleportSpawner.Spawn(objSpawnName, transform.position);
+                teleportSpawner.Spawn(objSpawnName, transform.position, this.gameObject);
                 break;
             default:
                 break;

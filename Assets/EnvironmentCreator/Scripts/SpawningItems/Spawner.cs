@@ -13,7 +13,7 @@ public abstract class Spawner
         this.prefabFolder = prefabFolder;
     }
 
-    public void Spawn(string prefabName, Vector3 spawnPosition)
+    public void Spawn(string prefabName, Vector3 spawnPosition, GameObject parentObj = null)
     {
         string path = "Assets/EnvironmentCreator/Prefabs/" + prefabFolder + "/" + (string.IsNullOrEmpty(prefabName) ? GetDefaultPrefab() : prefabName) + ".prefab";
         GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
@@ -24,7 +24,7 @@ public abstract class Spawner
             GameObject spawnedItem = Object.Instantiate(prefab, spawnPosition, Quaternion.identity);
             spawnedItem.name = prefabName;
             spawnedItem.GetComponent<FolderPlacement>().PlaceInFolder(prefabFolder);
-
+            spawnedItem.GetComponent<FolderPlacement>().associatedGameObject = parentObj;
         }
         else
         {

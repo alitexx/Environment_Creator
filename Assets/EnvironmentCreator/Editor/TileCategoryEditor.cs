@@ -173,7 +173,7 @@ public class TileCategoryEditor : EditorWindow
         }
 
         // Add a new case to the switch statement
-        string caseStatement = $"case TileCategory.{categoryName}Spawner:\n                {categoryName.ToLower()}Spawner.Spawn(objSpawnName, transform.position);\n                break;\n            ";
+        string caseStatement = $"case TileCategory.{categoryName}Spawner:\n                {categoryName.ToLower()}Spawner.Spawn(objSpawnName, transform.position, this.gameObject);\n                break;\n            ";
         if (!scriptContent.Contains(caseStatement))
         {
             int switchIndex = scriptContent.LastIndexOf("default:");
@@ -271,7 +271,7 @@ public class TileCategoryEditor : EditorWindow
         }
 
         // Remove case from switch statement
-        string caseStatement = $"case TileCategory.{categoryName}Spawner:\n                {categoryName.ToLower()}Spawner.Spawn(objSpawnName, transform.position);\n                break;\n            ";
+        string caseStatement = $"case TileCategory.{categoryName}Spawner:\n                {categoryName.ToLower()}Spawner.Spawn(objSpawnName, transform.position, this.gameObject);\n                break;\n            ";
         if (scriptContent.Contains(caseStatement))
         {
             scriptContent = scriptContent.Replace(caseStatement, "");
