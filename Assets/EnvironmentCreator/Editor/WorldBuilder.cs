@@ -37,6 +37,8 @@ public class WorldBuilder : EditorWindow
     private PopupField<string> itemDropdown; // Dropdown for items in folder
     private string spawnedItem = "Default";
 
+    private bool allowPlacementBool = true;
+
     // Tile Category Variables
 
     private bool canCollide = false;
@@ -133,6 +135,18 @@ public class WorldBuilder : EditorWindow
             camera.backgroundColor = bgColor;
         });
         root.Add(colorField);
+
+
+        // Create a toggle for boolean input
+        var allowPlacement = new Toggle("Placing Tiles")
+        {
+            value = allowPlacementBool
+        };
+        allowPlacement.RegisterValueChangedCallback(evt =>
+        {
+            allowPlacementBool = evt.newValue; // Update the boolean value
+        });
+        root.Add(allowPlacement);
 
         //
         //
@@ -277,6 +291,12 @@ public class WorldBuilder : EditorWindow
             case TileCategory.TomeSpawner:
                 folderPath = "Assets/EnvironmentCreator/Prefabs/Tome";
                 break;
+            case TileCategory.PopUpSpawner:
+                folderPath = "Assets/EnvironmentCreator/Prefabs/PopUp";
+                break;
+            case TileCategory.TeleportSpawner:
+                folderPath = "Assets/EnvironmentCreator/Prefabs/Teleport";
+                break;
             default:
                 folderPath = "Assets/EnvironmentCreator/Prefabs/Misc/DONOTCHANGE";
                 break;
@@ -343,7 +363,8 @@ public class WorldBuilder : EditorWindow
 
     private void OnSceneGUI(SceneView sceneView) {
         // Check if we have a prefab to place and left mouse button is clicked
-        if (m_PlacedObjectPrefab != null && Event.current.type == EventType.MouseDown && Event.current.button == 0)
+        // UPDATE! Now checks if we are allowed to place tiles
+        if (m_PlacedObjectPrefab != null && Event.current.type == EventType.MouseDown && Event.current.button == 0 && allowPlacementBool)
         {
             // Calculate the position in the scene based on mouse click
             Vector3 position = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition).origin;

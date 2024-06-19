@@ -16,7 +16,13 @@ public enum TileCategory
     ItemSpawner,
 
     //Tomes spawn on these tiles
-    TomeSpawner
+    TomeSpawner,
+
+    //PopUp spawn on these tiles (USER DEFINED TILE CATEGORY)
+    PopUpSpawner,
+
+    //Teleport spawn on these tiles (USER DEFINED TILE CATEGORY)
+    TeleportSpawner
 }
 
 
@@ -29,6 +35,10 @@ public class tileCategory : MonoBehaviour
     private Spawner npcSpawner = new NPCSpawner();
     private Spawner itemSpawner = new ItemSpawner();
     private Spawner tomeSpawner = new TomeSpawner();
+
+    private Spawner popupSpawner = new PopUpSpawner();
+
+    private Spawner teleportSpawner = new TeleportSpawner();
 
     //User defined spawners above
 
@@ -81,6 +91,12 @@ public class tileCategory : MonoBehaviour
                 break;
             case TileCategory.TomeSpawner:
                 tomeSpawner.Spawn(objSpawnName, transform.position);
+                break;
+            case TileCategory.PopUpSpawner:
+                popupSpawner.Spawn(objSpawnName, transform.position);
+                break;
+            case TileCategory.TeleportSpawner:
+                teleportSpawner.Spawn(objSpawnName, transform.position);
                 break;
             default:
                 break;

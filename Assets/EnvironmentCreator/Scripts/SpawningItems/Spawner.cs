@@ -67,7 +67,23 @@ public class TomeSpawner : Spawner
 
 
 
-//User defined Spawners go here:
+public class PopUpSpawner : Spawner
+{
+    public PopUpSpawner() : base("PopUp") { }
+
+    protected override string GetDefaultPrefab()
+    {
+        return "DefaultEntity";
+    }
+}public class TeleportSpawner : Spawner
+{
+    public TeleportSpawner() : base("Teleport") { }
+
+    protected override string GetDefaultPrefab()
+    {
+        return "DefaultEntity";
+    }
+}//User defined Spawners go here:
 
 
 
