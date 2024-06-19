@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -41,6 +42,7 @@ public class WorldBuilder : EditorWindow
 
     // Tile Category Variables
 
+    private string tileName = "";
     private bool canCollide = false;
     private TileCategory tileCategory = TileCategory.Default;
     private int tileLayer = 0;
@@ -205,6 +207,19 @@ public class WorldBuilder : EditorWindow
         var label2 = new Label("\n <b> Tile Properties</b>");
         root.Add(label2);
 
+        // Create a text field for string input
+        var textField = new TextField("Tile Name")
+        {
+            value = tileName // Set initial value
+        };
+        textField.RegisterValueChangedCallback(evt =>
+        {
+            tileName = evt.newValue; // Update the string value
+        });
+
+        // Add the text field to the root visual element
+        rootVisualElement.Add(textField);
+
         // Create a toggle for boolean input
         var boolField = new Toggle("Can Collide")
         {
@@ -366,6 +381,16 @@ public class WorldBuilder : EditorWindow
         // UPDATE! Now checks if we are allowed to place tiles
         if (m_PlacedObjectPrefab != null && Event.current.type == EventType.MouseDown && Event.current.button == 0 && allowPlacementBool)
         {
+            // Check if there is a parent object, if there isn't then make a new one
+            if (parentOBJ == null)
+            {
+                Debug.LogWarning("The parent object has been deleted or moved! Created new parent object named [Temp World (Game Object)].");
+                parentOBJ = new GameObject("Temp World (Game Object)");
+                objectField.value = parentOBJ;
+                parentOBJ.tag = "Editing";
+                tilePlacement.parentTransform = parentOBJ.transform;
+            }
+
             // Calculate the position in the scene based on mouse click
             Vector3 position = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition).origin;
 
@@ -385,20 +410,26 @@ public class WorldBuilder : EditorWindow
                 GameObject instance = Instantiate(m_PlacedObjectPrefab, validPosition, Quaternion.identity);
                 Undo.RegisterCreatedObjectUndo(instance, "Place Object");
 
-                if (parentOBJ == null)
-                {
-                    Debug.LogWarning("The parent object has been deleted or moved! Created new parent object named [Temp World (Game Object)].");
-                    parentOBJ = new GameObject("Temp World (Game Object)");
-                    objectField.value = parentOBJ;
-                }
-
                 // Set the parent of the newly created object to the parent object
                 instance.transform.parent = parentOBJ.transform;
-                instance.name = m_PlacedObjectPrefab.name;
+                if (tileName != "")
+                {
+                    instance.name = tileName;
+                } else
+                {
+                    instance.name = m_PlacedObjectPrefab.name;
+                }
                 instance.GetComponent<SpriteRenderer>().sortingOrder = tileLayer;
                 // Check if the instance has the tile category script, if it does, change the tile category and can collide.
                 if(instance.GetComponent<tileCategory>() != null)
                 {
+                    // If the tag doesn't exist, create it
+                    if (!TagHelper.TagExists(tileCategory.ToString().Replace("Spawner", "")))
+                    {
+                        Debug.Log("No tag for the tile category [" + tileCategory.ToString().Replace("Spawner", "") + "] was found. Created new tag for this category; this message should not appear again for this tile category.");
+                        TagHelper.AddTag(tileCategory.ToString().Replace("Spawner", ""));
+                    }
+
                     instance.GetComponent<tileCategory>().SetValuesWhenPlaced(tileCategory, canCollide, spawnedItem);
                 } else
                 {

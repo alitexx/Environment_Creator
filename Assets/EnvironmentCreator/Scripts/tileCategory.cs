@@ -35,9 +35,7 @@ public class tileCategory : MonoBehaviour
     private Spawner npcSpawner = new NPCSpawner();
     private Spawner itemSpawner = new ItemSpawner();
     private Spawner tomeSpawner = new TomeSpawner();
-
     private Spawner popupSpawner = new PopUpSpawner();
-
     private Spawner teleportSpawner = new TeleportSpawner();
 
     //User defined spawners above
@@ -54,6 +52,7 @@ public class tileCategory : MonoBehaviour
 
     public void SetValuesWhenPlaced(TileCategory tileCategory, bool canCollide, string objSpawnName)
     {
+
         this.CanCollide = canCollide;
         // If we should be colliding and there is not already a collider
         // NOTE: Maybe in the future, make a box collider variable.
@@ -74,6 +73,8 @@ public class tileCategory : MonoBehaviour
         this.TileCategory = tileCategory;
         RunTileCategory(objSpawnName);
     }
+
+
 
     // A very poorly named function that houses a switch statement, the function called depending on the tile category.
 
