@@ -24,6 +24,10 @@ public class WorldBuilder : EditorWindow
 
     private Color bgColor = Color.white;
 
+    //Determining if there's a sprite background in the camera
+
+    private GameObject cameraBGsprite;
+
     //tilePlacement script
 
     private ObjectField objectField;
@@ -137,6 +141,24 @@ public class WorldBuilder : EditorWindow
             camera.backgroundColor = bgColor;
         });
         root.Add(colorField);
+
+
+
+        // Create a new ObjectField for selecting a Sprite
+        var backgroundField = new ObjectField("Background Sprite")
+        {
+            objectType = typeof(Sprite),
+            allowSceneObjects = false
+        };
+
+        // Register a callback for when the sprite is changed
+        backgroundField.RegisterValueChangedCallback(evt =>
+        {
+            SetupBackground(evt.newValue as Sprite);
+        });
+
+        // Add the ObjectField to the root of the editor window
+        rootVisualElement.Add(backgroundField);
 
 
         // Create a toggle for boolean input
@@ -448,6 +470,15 @@ public class WorldBuilder : EditorWindow
         SceneView.duringSceneGui += OnSceneGUI;
 
         camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        // Find the background child
+        try
+        {
+            cameraBGsprite = camera.transform.Find("Background").gameObject;
+        }
+        catch
+        {
+            cameraBGsprite = null;
+        }
 
         // create a game object to be the parent of the objects created
         parentOBJ = new GameObject("New World (Game Object)");
@@ -466,5 +497,37 @@ public class WorldBuilder : EditorWindow
             DestroyImmediate(parentOBJ);
             parentOBJ = null;
         }
+    }
+
+
+    void SetupBackground(Sprite backgroundImage)
+    {
+        if (cameraBGsprite)
+        {
+            DestroyImmediate(cameraBGsprite);
+        }
+        // Create a new GameObject for the background
+        GameObject background = new GameObject("Background");
+
+        // Add a Sprite Renderer component
+        SpriteRenderer renderer = background.AddComponent<SpriteRenderer>();
+        renderer.sprite = backgroundImage;
+
+        // Set the sorting layer to a background layer and the order to a low value
+        renderer.sortingLayerName = "Background";
+        renderer.sortingOrder = -10;
+
+        // Parent the background to the camera
+        background.transform.parent = Camera.main.transform;
+
+        // Adjust the size to fit the camera view
+        float cameraHeight = Camera.main.orthographicSize * 2;
+        float cameraWidth = cameraHeight * Camera.main.aspect;
+
+        background.transform.localScale = new Vector3(cameraWidth / renderer.sprite.bounds.size.x, cameraHeight / renderer.sprite.bounds.size.y, 1);
+
+        // Position it at the camera's position
+        background.transform.localPosition = new Vector3(0, 0, 10); // Keep it behind the camera view
+        cameraBGsprite = background;
     }
 }
