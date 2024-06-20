@@ -41,6 +41,7 @@ public class WorldBuilder : EditorWindow
 
     private PopupField<string> itemDropdown; // Dropdown for items in folder
     private string spawnedItem = "Default";
+    private Transform teleportDestination;
 
     private bool allowPlacementBool = true;
 
@@ -264,6 +265,22 @@ public class WorldBuilder : EditorWindow
         });
         root.Add(intField);
 
+
+
+
+
+        // Create a new ObjectField for selecting a Teleport To location
+        var teleportTo = new ObjectField("Teleport Destination")
+        {
+            objectType = typeof(Transform)
+        };
+
+        // Register a callback for when the sprite is changed
+        teleportTo.RegisterValueChangedCallback(evt =>
+        {
+            teleportDestination = evt.newValue as Transform;
+        });
+
         // Create an enum field for enum input
         var enumField = new EnumField("Tile Category", tileCategory);
         enumField.RegisterValueChangedCallback(evt =>
@@ -272,9 +289,15 @@ public class WorldBuilder : EditorWindow
             if (tileCategory == TileCategory.Default)
             {
                 root.Remove(itemDropdown);
+                root.Remove(teleportTo);
+            } else if (tileCategory == TileCategory.TeleportSpawner)
+            {
+                root.Remove(itemDropdown);
+                root.Add(teleportTo);
             }
             else
             {
+                root.Remove(teleportTo);
                 root.Add(itemDropdown);
             }
             UpdateItemDropdown();
@@ -288,6 +311,7 @@ public class WorldBuilder : EditorWindow
         {
             spawnedItem = evt.newValue as string;
         });
+        
 
         // Initialize the item dropdown
         UpdateItemDropdown();
@@ -450,6 +474,15 @@ public class WorldBuilder : EditorWindow
                     {
                         Debug.Log("No tag for the tile category [" + tileCategory.ToString().Replace("Spawner", "") + "] was found. Created new tag for this category; this message should not appear again for this tile category.");
                         TagHelper.AddTag(tileCategory.ToString().Replace("Spawner", ""));
+                    }
+
+                    //Teleport spawner is special, so it doesn't have values placed or an object spawned on it.
+                    if(tileCategory == TileCategory.TeleportSpawner)
+                    {
+                        instance.tag = "Teleport";
+                        Teleport teleportScript = instance.AddComponent<Teleport>();
+                        teleportScript.targetLocation = teleportDestination;
+                        return;
                     }
 
                     instance.GetComponent<tileCategory>().SetValuesWhenPlaced(tileCategory, canCollide, spawnedItem);
