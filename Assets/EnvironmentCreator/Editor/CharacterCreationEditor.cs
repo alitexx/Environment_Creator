@@ -11,7 +11,7 @@ public class CharacterCreationEditor : EditorWindow
     private AnimationClip[] animations = new AnimationClip[9];
     private float walkSpeed = 1f;
     private float reach = 1f;
-    private RectTransform startPosition;
+    private Transform startPosition;
 
     // NPC Editor variables
     private GameObject npcGameObject;
@@ -63,7 +63,7 @@ public class CharacterCreationEditor : EditorWindow
 
             walkSpeed = EditorGUILayout.FloatField("Walk Speed", walkSpeed);
             reach = EditorGUILayout.FloatField("Reach", reach);
-            startPosition = (RectTransform)EditorGUILayout.ObjectField("Start Position", startPosition, typeof(RectTransform), true);
+            startPosition = (Transform)EditorGUILayout.ObjectField("Start Position", startPosition, typeof(Transform), true);
         }
         else
         {
@@ -232,6 +232,7 @@ public class CharacterCreationEditor : EditorWindow
     private void CreatePlayerCharacterPrefab()
     {
         string prefabPath = "Assets/EnvironmentCreator/Prefabs/Player Character";
+        Animator animator;
         playerCharacterPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath + "/PlayerCharacter.prefab");
 
         if (playerCharacterPrefab == null)
@@ -239,28 +240,48 @@ public class CharacterCreationEditor : EditorWindow
             playerCharacterPrefab = new GameObject("PlayerCharacter");
         }
         PlayerMovement playerMovement = playerCharacterPrefab.AddComponent<PlayerMovement>();
-        Animator animator = playerCharacterPrefab.AddComponent<Animator>();
+        try
+        {
+            animator = playerCharacterPrefab.AddComponent<Animator>();
+        } catch
+        {
+            animator = playerCharacterPrefab.GetComponent<Animator>();
+        }
+        //Animator animator = playerCharacterPrefab.AddComponent<Animator>();
         CharacterData characterData = playerCharacterPrefab.AddComponent<CharacterData>();
+
         AnimatorController animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(prefabPath + "/PlayerAnimController.controller");
         if (animatorController != null)
         {
             ClearAnimatorController(animatorController);
-        } else
+        }
+        else
         {
             // Create a new Animator Controller
             animatorController = AnimatorController.CreateAnimatorControllerAtPath(prefabPath + "/PlayerAnimController.controller");
         }
-
 
         // Add float parameters to the Animator Controller
         animatorController.AddParameter("Horizontal", AnimatorControllerParameterType.Float);
         animatorController.AddParameter("Vertical", AnimatorControllerParameterType.Float);
         animatorController.AddParameter("Speed", AnimatorControllerParameterType.Float);
 
-        CreateStatesAndTransitions(animatorController, animations);
+        // Check if CreateStatesAndTransitions returns a valid AnimatorController
+        AnimatorController newAnimatorController = CreateStatesAndTransitions(animatorController, animations);
+        if (newAnimatorController == null)
+        {
+            Debug.LogError("CreateStatesAndTransitions returned null.");
+        }
+        else if (animator == null)
+        {
+            Debug.LogError("Animator component is null.");
+        }
+        else
+        {
+            // Assign the new Animator Controller to the Animator component
+            animator.runtimeAnimatorController = newAnimatorController;
+        }
 
-        // Assign the new Animator Controller to the Animator component
-        animator.runtimeAnimatorController = animatorController;
 
         // If the tag doesn't exist, create it
         if (!TagHelper.TagExists("PlayerCharacter"))
@@ -285,6 +306,10 @@ public class CharacterCreationEditor : EditorWindow
             playerCharacterPrefab.transform.position = startPosition.transform.position;
         }
 
+        //Add Rigidbody and colliders for collisions
+        Rigidbody2D rigidbody2D = playerCharacterPrefab.AddComponent<Rigidbody2D>();
+        BoxCollider2D boxCollider2D = playerCharacterPrefab.AddComponent<BoxCollider2D>();
+
         PrefabUtility.SaveAsPrefabAsset(playerCharacterPrefab, prefabPath + "/PlayerCharacter.prefab");
         //DestroyImmediate(playerCharacterPrefab);
 
@@ -295,12 +320,16 @@ public class CharacterCreationEditor : EditorWindow
             Debug.LogError("Camera has been deleted. Please define a Main Camera with the tag [MainCamera] and add component [CameraMovement].");
             return;
         }
-        CameraMovement camMovement = camera.AddComponent<CameraMovement>();
-        camMovement.player = playerCharacterPrefab.transform;
 
+        CameraMovement camMovement = camera.GetComponent<CameraMovement>();
+        if (camMovement == null)
+        {
+            camMovement = camera.AddComponent<CameraMovement>();
+        }
+        camMovement.player = playerCharacterPrefab.transform;
     }
 
-    private void CreateStatesAndTransitions(AnimatorController controller, AnimationClip[] animations)
+    private AnimatorController CreateStatesAndTransitions(AnimatorController controller, AnimationClip[] animations)
     {
         AnimatorStateMachine rootStateMachine = controller.layers[0].stateMachine;
 
@@ -344,6 +373,8 @@ public class CharacterCreationEditor : EditorWindow
             }
             AddTransitionToIdle(rootStateMachine, states[i], states[0]);
         }
+
+        return controller;
     }
 
     private void AddTransitionToIdle(AnimatorStateMachine stateMachine, AnimatorState fromState, AnimatorState idleState)

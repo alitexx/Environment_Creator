@@ -18,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
         movement.y = Input.GetAxis("Vertical");
 
         // Normalize the movement vector to prevent faster diagonal movement
-        Vector3 move = new Vector3(movement.x, 0, movement.y).normalized;
+        Vector3 move = new Vector3(movement.x, movement.y, 0).normalized;
 
         // If there is movement input
         if (move != Vector3.zero)

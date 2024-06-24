@@ -10,7 +10,11 @@ public class CameraMovement : MonoBehaviour
         // If you haven't set an offset in the inspector, set a default one
         if (offset == Vector3.zero)
         {
-            offset = new Vector3(0, 10, 0);  // Example offset for a top-down view
+            offset = new Vector3(0, 0, -10);  // Example offset for a top-down view
+        }
+        if (offset.z >= 0)
+        {
+            Debug.LogWarning("The Z axis should always be less than 0 in Unity 2D, or else the items in the scene will appear invisible. You can change the offset on the Main Camera object under the Camera Movement script.");
         }
     }
 

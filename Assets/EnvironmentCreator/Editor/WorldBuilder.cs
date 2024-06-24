@@ -288,17 +288,36 @@ public class WorldBuilder : EditorWindow
             tileCategory = (TileCategory)evt.newValue; // Update the enum value
             if (tileCategory == TileCategory.Default)
             {
-                root.Remove(itemDropdown);
-                root.Remove(teleportTo);
-            } else if (tileCategory == TileCategory.TeleportSpawner)
+                if (root.Contains(itemDropdown))
+                {
+                    root.Remove(itemDropdown);
+                }
+                if (root.Contains(teleportTo))
+                {
+                    root.Remove(teleportTo);
+                }
+            }
+            else if (tileCategory == TileCategory.TeleportSpawner)
             {
-                root.Remove(itemDropdown);
-                root.Add(teleportTo);
+                if (root.Contains(itemDropdown))
+                {
+                    root.Remove(itemDropdown);
+                }
+                if (!root.Contains(teleportTo))
+                {
+                    root.Add(teleportTo);
+                }
             }
             else
             {
-                root.Remove(teleportTo);
-                root.Add(itemDropdown);
+                if (root.Contains(teleportTo))
+                {
+                    root.Remove(teleportTo);
+                }
+                if (!root.Contains(itemDropdown))
+                {
+                    root.Add(itemDropdown);
+                }
             }
             UpdateItemDropdown();
         });
@@ -480,6 +499,8 @@ public class WorldBuilder : EditorWindow
                     if(tileCategory == TileCategory.TeleportSpawner)
                     {
                         instance.tag = "Teleport";
+                        BoxCollider2D boxCollider2D = instance.AddComponent<BoxCollider2D>();
+                        boxCollider2D.isTrigger = true;
                         Teleport teleportScript = instance.AddComponent<Teleport>();
                         teleportScript.targetLocation = teleportDestination;
                         return;

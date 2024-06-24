@@ -29,8 +29,8 @@ public enum TileCategory
 
 public class tileCategory : MonoBehaviour
 {
-    public TileCategory TileCategory;
-    public bool CanCollide;
+    private TileCategory TileCategory;
+    private bool CanCollide;
 
     private Spawner npcSpawner = new NPCSpawner();
     private Spawner itemSpawner = new ItemSpawner();

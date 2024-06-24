@@ -9,6 +9,7 @@ public class Teleport : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        Debug.Log("I HIT SOMETHING!");
         if (other.CompareTag("PlayerCharacter"))
         {
             if (useFadeTransition)
