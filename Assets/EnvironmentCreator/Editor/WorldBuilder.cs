@@ -13,6 +13,9 @@ using ObjectField = UnityEditor.UIElements.ObjectField;
 
 public class WorldBuilder : EditorWindow
 {
+    //teleporter gameobject
+    public GameObject teleporterFade;
+
     //where we store the sprites we create. should be one room (or the world itself), players can change this using the load command
     public GameObject parentOBJ;
     
@@ -498,11 +501,18 @@ public class WorldBuilder : EditorWindow
                     //Teleport spawner is special, so it doesn't have values placed or an object spawned on it.
                     if(tileCategory == TileCategory.TeleportSpawner)
                     {
-                        instance.tag = "Teleport";
+
+                        //add the fade if it isnt already in the scene
+                        if (!teleporterFade && GameObject.FindGameObjectWithTag("Teleport"))
+                        {
+                            // Instantiate the object at the valid position
+                            teleporterFade= Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/EnvironmentCreator/Prefabs/Teleport/DefaultTeleporter.prefab"), Vector3.zero, Quaternion.identity);
+                        }
                         BoxCollider2D boxCollider2D = instance.AddComponent<BoxCollider2D>();
                         boxCollider2D.isTrigger = true;
                         Teleport teleportScript = instance.AddComponent<Teleport>();
                         teleportScript.targetLocation = teleportDestination;
+
                         return;
                     }
 

@@ -14,6 +14,7 @@ public class Teleport : MonoBehaviour
         {
             if (useFadeTransition)
             {
+                Debug.Log(other.gameObject);
                 StartCoroutine(FadeAndTeleport(other.gameObject));
             }
             else
