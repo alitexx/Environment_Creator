@@ -3,9 +3,15 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
+using static UnityEngine.UI.ScrollRect;
+
+
+
+
 
 public class CharacterCreationEditor : EditorWindow
 {
+    private enum MovementType { Random, SetPositions }
     private bool includeMC = false;
     private GameObject playerCharacterPrefab;
     private AnimationClip[] animations = new AnimationClip[9];
@@ -23,6 +29,27 @@ public class CharacterCreationEditor : EditorWindow
     private GameObject interactionPopupBox;
     private string interactionText = "";
     private bool updatePrefab = false;
+
+    //movement
+    private MovementType movementType;
+    private SerializedObject serializedObject;
+    private SerializedProperty setPositionsProperty;
+
+    [SerializeField]
+    private Transform[] setPositions = new Transform[0];
+
+    private void OnEnable()
+    {
+        serializedObject = new SerializedObject(this);
+        setPositionsProperty = serializedObject.FindProperty("setPositions");
+
+        // Ensure setPositions is initialized
+        if (setPositions == null)
+        {
+            setPositions = new Transform[0];
+        }
+    }
+
 
     [MenuItem("Window/Environment Creator/Character Creation")]
     public static void ShowWindow()
@@ -84,12 +111,24 @@ public class CharacterCreationEditor : EditorWindow
 
         if (npcGameObject != null)
         {
+            serializedObject.Update();
             canMove = EditorGUILayout.Toggle("Can Move", canMove);
 
             if (canMove)
             {
                 movementSpeed = EditorGUILayout.FloatField("Movement Speed", movementSpeed);
-                moveFrequency = EditorGUILayout.FloatField("Move Frequency", moveFrequency);
+                movementType = (MovementType)EditorGUILayout.EnumPopup("Movement Type", movementType);
+
+                if (movementType == MovementType.Random)
+                {
+                    moveFrequency = EditorGUILayout.FloatField("Move Frequency", moveFrequency);
+                }
+                if (movementType == MovementType.SetPositions)
+                {
+                    EditorGUILayout.PropertyField(setPositionsProperty, true);
+                }
+
+
 
                 GUILayout.Label("NPC Animations", EditorStyles.boldLabel);
 
@@ -108,6 +147,8 @@ public class CharacterCreationEditor : EditorWindow
                 }
 
                 EditorGUILayout.EndVertical();
+
+                serializedObject.ApplyModifiedProperties();
             }
 
             canInteract = EditorGUILayout.Toggle("Can Interact", canInteract);
