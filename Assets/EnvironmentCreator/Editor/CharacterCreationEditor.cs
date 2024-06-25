@@ -178,8 +178,15 @@ public class CharacterCreationEditor : EditorWindow
         if(canMove)
         {
             NPCMovement npcmovement = npcGameObject.AddComponent<NPCMovement>();
-            npcmovement.movementSpeed = movementSpeed;
-            npcmovement.movementFrequency = moveFrequency;
+            if(movementType == MovementType.Random)
+            {
+                npcmovement.SetValues(movementSpeed, moveFrequency, setPositions, false, 1f);
+            }
+            else
+            {
+                npcmovement.SetValues(movementSpeed, moveFrequency, setPositions, true, 1f);
+            }
+            
             string prefabPath = "Assets/EnvironmentCreator/Prefabs/NPC";
             Animator animator = npcGameObject.AddComponent<Animator>();
 
