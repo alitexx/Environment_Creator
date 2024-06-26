@@ -1,16 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class NPCMovement : MonoBehaviour
 {
     private bool isMoving = true;
-    private bool isPaused;
-    private Transform[] setPositions;
-    private float movementSpeed = 1f;
-    private float movementFrequency = 1f;
-    private float waitTime = 1f;
-    private bool isSetPositions;
+    public bool isPaused;
+    public Transform[] setPositions;
+    public float movementSpeed = 1f;
+    public float movementFrequency = 1f;
+    public float waitTime = 1f;
+    public bool isSetPositions;
     private Vector3 referenceSpace;
 
     private int currentSetPositionIndex = 0;
@@ -18,7 +19,8 @@ public class NPCMovement : MonoBehaviour
 
     private void Start()
     {
-        referenceSpace = Resources.Load<GameObject>("EnvironmentCreator/Prefabs/ReferenceTile").transform.localScale;
+        referenceSpace = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/EnvironmentCreator/Prefabs/ReferenceTile.prefab").transform.localScale;
+        Debug.Log(isSetPositions);
         if (isSetPositions)
         {
             if (setPositions.Length > 0)
@@ -38,6 +40,8 @@ public class NPCMovement : MonoBehaviour
         this.setPositions = setPositions;
         this.isSetPositions = isSetPositions;
         this.waitTime = waitTime;
+
+        Debug.Log("isSetPositions has been set to " + this.isSetPositions);
     }
 
     private IEnumerator MoveRandomly()

@@ -23,6 +23,7 @@ public class CharacterCreationEditor : EditorWindow
     private GameObject npcGameObject;
     private bool canMove = false;
     private float movementSpeed = 1f;
+    private float waitTime = 1f;
     private float moveFrequency = 1f;
     private AnimationClip[] npcAnimations = new AnimationClip[9];
     private bool canInteract = false;
@@ -117,6 +118,7 @@ public class CharacterCreationEditor : EditorWindow
             if (canMove)
             {
                 movementSpeed = EditorGUILayout.FloatField("Movement Speed", movementSpeed);
+
                 movementType = (MovementType)EditorGUILayout.EnumPopup("Movement Type", movementType);
 
                 if (movementType == MovementType.Random)
@@ -125,6 +127,7 @@ public class CharacterCreationEditor : EditorWindow
                 }
                 if (movementType == MovementType.SetPositions)
                 {
+                    waitTime = EditorGUILayout.FloatField("Wait time (in seconds)", waitTime);
                     EditorGUILayout.PropertyField(setPositionsProperty, true);
                 }
 
@@ -175,20 +178,29 @@ public class CharacterCreationEditor : EditorWindow
 
     private void UpdateNPC()
     {
+        //Check for pre-existing components. if there are pre existing components, delete them.
         if(canMove)
         {
             NPCMovement npcmovement = npcGameObject.AddComponent<NPCMovement>();
             if(movementType == MovementType.Random)
             {
-                npcmovement.SetValues(movementSpeed, moveFrequency, setPositions, false, 1f);
+                npcmovement.SetValues(movementSpeed, moveFrequency, setPositions, false, waitTime);
             }
             else
             {
-                npcmovement.SetValues(movementSpeed, moveFrequency, setPositions, true, 1f);
+                npcmovement.SetValues(movementSpeed, moveFrequency, setPositions, true, waitTime);
             }
             
             string prefabPath = "Assets/EnvironmentCreator/Prefabs/NPC";
-            Animator animator = npcGameObject.AddComponent<Animator>();
+            Animator animator;
+            try
+            {
+                animator = npcGameObject.AddComponent<Animator>();
+            }
+            catch
+            {
+                animator = npcGameObject.GetComponent<Animator>();
+            }
 
             // Implementation for updating this specific NPC game object
             AnimatorController animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(prefabPath + "/PlayerAnimController.controller");

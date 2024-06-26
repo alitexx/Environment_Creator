@@ -546,6 +546,7 @@ public class WorldBuilder : EditorWindow
 
         // create a game object to be the parent of the objects created
         parentOBJ = new GameObject("New World (Game Object)");
+        parentOBJ.tag = "Editing";
     }
 
     private void OnDisable()
