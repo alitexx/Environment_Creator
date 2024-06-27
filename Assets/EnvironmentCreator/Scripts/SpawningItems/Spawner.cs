@@ -45,13 +45,13 @@ public class NPCSpawner : Spawner
     }
 }
 
-public class ItemSpawner : Spawner
+public class CollectibleSpawner : Spawner
 {
-    public ItemSpawner() : base("Item") { }
+    public CollectibleSpawner() : base("Collectible") { }
 
     protected override string GetDefaultPrefab()
     {
-        return "DefaultItem";
+        return "DefaultCollectible";
     }
 }
 

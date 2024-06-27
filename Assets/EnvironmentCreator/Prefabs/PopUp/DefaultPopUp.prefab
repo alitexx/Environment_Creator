@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1244351239332025458}
   - component: {fileID: 6189170113593249233}
   m_Layer: 0
-  m_Name: DefaultEntity
+  m_Name: DefaultPopUp
   m_TagString: PopUp
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

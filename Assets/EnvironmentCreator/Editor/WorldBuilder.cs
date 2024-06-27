@@ -368,7 +368,7 @@ public class WorldBuilder : EditorWindow
             case TileCategory.NPCSpawner:
                 folderPath = "Assets/EnvironmentCreator/Prefabs/NPC";
                 break;
-            case TileCategory.ItemSpawner:
+            case TileCategory.CollectibleSpawner:
                 folderPath = "Assets/EnvironmentCreator/Prefabs/Item";
                 break;
             case TileCategory.TomeSpawner:

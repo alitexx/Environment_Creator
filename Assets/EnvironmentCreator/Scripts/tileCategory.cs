@@ -12,8 +12,8 @@ public enum TileCategory
     //NPCS spawn on these tiles
     NPCSpawner,
 
-    //Items spawn on these tiles
-    ItemSpawner,
+    //Collectibles spawn on these tiles
+    CollectibleSpawner,
 
     //Tomes spawn on these tiles
     TomeSpawner,
@@ -33,7 +33,7 @@ public class tileCategory : MonoBehaviour
     private bool CanCollide;
 
     private Spawner npcSpawner = new NPCSpawner();
-    private Spawner itemSpawner = new ItemSpawner();
+    private Spawner collectibleSpawner = new CollectibleSpawner();
     private Spawner tomeSpawner = new TomeSpawner();
     private Spawner popupSpawner = new PopUpSpawner();
     private Spawner teleportSpawner = new TeleportSpawner();
@@ -44,7 +44,7 @@ public class tileCategory : MonoBehaviour
     {
         //// Initialize spawners
         //enemySpawner = new EnemySpawner();
-        //itemSpawner = new ItemSpawner();
+        //collectibleSpawner = new CollectibleSpawner();
         //tomeSpawner = new TomeSpawner();
 
         RunTileCategory("");
@@ -87,8 +87,8 @@ public class tileCategory : MonoBehaviour
             case TileCategory.NPCSpawner:
                 npcSpawner.Spawn(objSpawnName, transform.position, this.gameObject);
                 break;
-            case TileCategory.ItemSpawner:
-                itemSpawner.Spawn(objSpawnName, transform.position, this.gameObject);
+            case TileCategory.CollectibleSpawner:
+                collectibleSpawner.Spawn(objSpawnName, transform.position, this.gameObject);
                 break;
             case TileCategory.TomeSpawner:
                 tomeSpawner.Spawn(objSpawnName, transform.position, this.gameObject);
