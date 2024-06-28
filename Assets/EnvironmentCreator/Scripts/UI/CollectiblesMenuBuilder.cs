@@ -6,12 +6,23 @@ using UnityEditor;
 
 public class CollectiblesMenuBuilder : MonoBehaviour
 {
+    [Header("Folder Paths")]
     public string collectiblesFolderPath = "Assets/EnvironmentCreator/Prefabs/Collectible";
+
+    [Header("Prefabs")]
     public GameObject buttonPrefab;
     public GameObject itemHolderPrefab;
-    public GameObject defaultImagePrefab;
+    public Sprite defaultImage;
+
+    [Header("Menu Settings")]
     public Transform menuRoot;
     public int maxItemsPerHolder = 4;
+
+    [Header("Unobtained Button")]
+    public Color normalColor = Color.gray;
+    public Color hoverColor = Color.white;
+    public Color pressedColor = Color.gray;
+    public Color itemColor = Color.black;
 
     private void Start()
     {
@@ -61,18 +72,44 @@ public class CollectiblesMenuBuilder : MonoBehaviour
 
     private void SetupButton(GameObject button, GameObject collectible)
     {
-        Image image = button.GetComponentInChildren<Image>();
+        // Create a new GameObject for the image and set it as a child of the button
+        GameObject imageObject = new GameObject("CollectibleImage");
+        imageObject.transform.SetParent(button.transform);
+
+        // Add an Image component to the new GameObject
+        Image image = imageObject.AddComponent<Image>();
+
+        // Get the SpriteRenderer from the collectible
         SpriteRenderer spriteRenderer = collectible.GetComponent<SpriteRenderer>();
 
+        // Set the sprite for the image
         if (spriteRenderer != null)
         {
             image.sprite = spriteRenderer.sprite;
         }
         else
         {
-            GameObject defaultImage = Instantiate(defaultImagePrefab, button.transform);
-            image = defaultImage.GetComponent<Image>();
-            // You can set the default sprite here if needed
+            // Set a default sprite if the collectible doesn't have a SpriteRenderer
+            image.sprite = defaultImage;
         }
+
+        // Optionally, adjust the RectTransform of the new image GameObject
+        RectTransform rectTransform = image.GetComponent<RectTransform>();
+        rectTransform.sizeDelta = new Vector2(125, 125); // Adjust the size as needed
+        rectTransform.anchoredPosition = Vector2.zero; // Center the image
+        RemoveCollectible(button, image);
     }
+
+    //Called when an item is obtained, changes UI
+    public void ObtainCollectible(GameObject collectible)
+    {
+
+    }
+
+    //called at start of the game. could also be called if a collectible is removed from the player
+    public void RemoveCollectible(GameObject button, Image image)
+    {
+        
+    }
+
 }

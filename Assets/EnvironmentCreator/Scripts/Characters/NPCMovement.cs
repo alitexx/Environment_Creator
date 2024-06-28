@@ -20,7 +20,6 @@ public class NPCMovement : MonoBehaviour
     private void Start()
     {
         referenceSpace = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/EnvironmentCreator/Prefabs/ReferenceTile.prefab").transform.localScale;
-        Debug.Log(isSetPositions);
         if (isSetPositions)
         {
             if (setPositions.Length > 0)
