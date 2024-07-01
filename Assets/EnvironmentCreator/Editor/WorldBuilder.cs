@@ -521,6 +521,11 @@ public class WorldBuilder : EditorWindow
                         {
                             TagHelper.AddTag("CollectiblesMenu");
                         }
+                        //If there is not a game object with the collectibles menu tag, then there is not a collectible UI. add one.
+                        if (!GameObject.FindGameObjectWithTag("CollectiblesMenu"))
+                        {
+                            Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/EnvironmentCreator/Prefabs/UI/Collectibles Menu/Collectible UI.prefab"), Vector3.zero, Quaternion.identity);
+                        }
                     }
 
                     instance.GetComponent<tileCategory>().SetValuesWhenPlaced(tileCategory, canCollide, spawnedItem);
