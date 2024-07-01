@@ -10,6 +10,7 @@ TagManager:
   - PopUp
   - PlayerCharacter
   - Editing
+  - CollectiblesMenu
   layers:
   - Default
   - TransparentFX

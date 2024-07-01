@@ -369,7 +369,7 @@ public class WorldBuilder : EditorWindow
                 folderPath = "Assets/EnvironmentCreator/Prefabs/NPC";
                 break;
             case TileCategory.CollectibleSpawner:
-                folderPath = "Assets/EnvironmentCreator/Prefabs/Item";
+                folderPath = "Assets/EnvironmentCreator/Prefabs/Collectible";
                 break;
             case TileCategory.TomeSpawner:
                 folderPath = "Assets/EnvironmentCreator/Prefabs/Tome";
@@ -514,6 +514,13 @@ public class WorldBuilder : EditorWindow
                         teleportScript.targetLocation = teleportDestination;
 
                         return;
+                    } else if (tileCategory == TileCategory.CollectibleSpawner)
+                    {
+                        //find prefab for collectible menu and put it in
+                        if (!TagHelper.TagExists("CollectiblesMenu"))
+                        {
+                            TagHelper.AddTag("CollectiblesMenu");
+                        }
                     }
 
                     instance.GetComponent<tileCategory>().SetValuesWhenPlaced(tileCategory, canCollide, spawnedItem);

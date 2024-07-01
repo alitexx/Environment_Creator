@@ -6,6 +6,7 @@ using UnityEditor;
 
 public class CollectiblesMenuBuilder : MonoBehaviour
 {
+
     [Header("Folder Paths")]
     public string collectiblesFolderPath = "Assets/EnvironmentCreator/Prefabs/Collectible";
 
@@ -24,6 +25,15 @@ public class CollectiblesMenuBuilder : MonoBehaviour
     public Color pressedColor = Color.gray;
     public Color itemColor = Color.black;
 
+    private Color normalColor_collected;
+    private Color hoverColor_collected;
+    private Color pressedColor_collected;
+    private Color itemColor_collected = Color.white;
+
+    [Header("Don't Modify")]
+    [SerializeField] private GameObject buttonFolder;
+    [SerializeField] private GameObject CollectibleMenu;
+
     private void Start()
     {
         BuildCollectiblesMenu();
@@ -40,8 +50,17 @@ public class CollectiblesMenuBuilder : MonoBehaviour
             {
                 currentHolder = CreateNewItemHolder();
             }
-
             GameObject button = Instantiate(buttonPrefab, currentHolder.transform);
+
+            //If this hasn't been set yet, set the collected colors
+            if (normalColor_collected == null)
+            {
+                Button btn = button.GetComponent<Button>();
+                ColorBlock colorBlock = btn.colors;
+                normalColor_collected = colorBlock.normalColor;
+                hoverColor_collected = colorBlock.highlightedColor;
+                pressedColor_collected = colorBlock.pressedColor;
+            }
             SetupButton(button, collectible);
         }
     }
@@ -61,7 +80,6 @@ public class CollectiblesMenuBuilder : MonoBehaviour
                 collectibles.Add(collectible);
             }
         }
-
         return collectibles;
     }
 
@@ -97,19 +115,88 @@ public class CollectiblesMenuBuilder : MonoBehaviour
         RectTransform rectTransform = image.GetComponent<RectTransform>();
         rectTransform.sizeDelta = new Vector2(125, 125); // Adjust the size as needed
         rectTransform.anchoredPosition = Vector2.zero; // Center the image
-        RemoveCollectible(button, image);
+        RemoveCollectible(button);
     }
 
     //Called when an item is obtained, changes UI
-    public void ObtainCollectible(GameObject collectible)
+    public void ObtainCollectible(string imageName)
     {
 
+
+        GameObject button = FindChildByName(buttonFolder, "Uncollected_" + imageName);
+        if(button == null)
+        {
+            Debug.LogError("Cannot find button with the name ["+ "Uncollected_" + imageName +"].");
+        }
+
+        // Change the button's color
+        Button btn = button.GetComponent<Button>();
+        ColorBlock colorBlock = btn.colors;
+        colorBlock.normalColor = normalColor;
+        colorBlock.highlightedColor = hoverColor;
+        colorBlock.pressedColor = pressedColor;
+        btn.colors = colorBlock;
+
+        //All images should be called CollectibleImage
+        Image image = FindChildByName(button, "CollectibleImage").GetComponent<Image>();
+        if (image == null)
+        {
+            Debug.LogError("Cannot find button with a child named [CollectibleImage]. Please keep the name of the child image as [CollectibleImage] for the code to run properly.");
+        }
+        image.color = itemColor_collected;
+        button.name = "Collected_" + imageName;
     }
 
     //called at start of the game. could also be called if a collectible is removed from the player
-    public void RemoveCollectible(GameObject button, Image image)
+    public void RemoveCollectible(GameObject button)
     {
-        
+        // Change the button's color
+        Button btn = button.GetComponent<Button>();
+        ColorBlock colorBlock = btn.colors;
+        colorBlock.normalColor = normalColor;
+        colorBlock.highlightedColor = hoverColor;
+        colorBlock.pressedColor = pressedColor;
+        btn.colors = colorBlock;
+
+        // Change the image's color
+        Image image = FindChildByName(button, "CollectibleImage").GetComponent<Image>();
+        if (image == null)
+        {
+            Debug.LogError("Cannot find button with a child named [CollectibleImage]. Please keep the name of the child image as [CollectibleImage] for the code to run properly.");
+        }
+        image.color = itemColor;
+        button.name = "Uncollected_" + image.sprite.name;
     }
 
+    //For obtaining a collectible
+    public static GameObject FindChildByName(GameObject parent, string name)
+    {
+        if (parent.name == name)
+        {
+            return parent;
+        }
+
+        foreach (Transform child in parent.transform)
+        {
+            GameObject result = FindChildByName(child.gameObject, name);
+            if (result != null)
+            {
+                return result;
+            }
+        }
+
+        return null;
+    }
+
+    //Simple button functions
+    //If you wanted to add an opening/closing animation of some sort, it would go here.
+    public void OpenCollectibleMenu()
+    {
+        CollectibleMenu.SetActive(true);
+    }
+
+    public void CloseCollectibleMenu()
+    {
+        CollectibleMenu.SetActive(false);
+    }
 }
