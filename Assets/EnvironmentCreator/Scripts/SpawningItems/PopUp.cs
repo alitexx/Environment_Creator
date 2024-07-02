@@ -2,19 +2,13 @@ using UnityEngine;
 
 public class PopUp : MonoBehaviour
 {
-    public SpriteRenderer spriteRenderer;  // Assign the sprite renderer in the inspector
     private GameObject player;
     private float range;
 
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("PlayerCharacter");
-        range = player.GetComponent<CharacterData>().reach;
-
-        if (spriteRenderer == null)
-        {
-            spriteRenderer = GetComponent<SpriteRenderer>();
-        }
+        range = GameSettings.interactRange;
     }
 
     void Update()
@@ -25,24 +19,12 @@ public class PopUp : MonoBehaviour
 
             if (distance <= range)
             {
-                SetActive(true);
+                gameObject.SetActive(true);
             }
             else if (distance > range + 1)
             {
-                SetActive(false);
+                gameObject.SetActive(false);
             }
-        }
-    }
-
-    private void SetActive(bool isActive)
-    {
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.enabled = isActive;
-        }
-        else
-        {
-            gameObject.SetActive(isActive);
         }
     }
 }

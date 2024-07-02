@@ -77,6 +77,7 @@ public class SoundEffectEditorWindow : EditorWindow
 
             if (isTriggered)
             {
+                audioSource.playOnAwake = false;
                 TriggeredSound triggeredSound = selectedObject.GetComponent<TriggeredSound>();
                 if (triggeredSound == null)
                 {
@@ -84,6 +85,20 @@ public class SoundEffectEditorWindow : EditorWindow
                 }
                 triggeredSound.triggerType = (TriggeredSound.TriggerType)selectedTrigger;
                 triggeredSound.interval = interval;
+                if((TriggeredSound.TriggerType)selectedTrigger == TriggeredSound.TriggerType.Colliding)
+                {
+                    BoxCollider2D boxcollider;
+                    try
+                    {
+                        boxcollider = selectedObject.GetComponent<BoxCollider2D>();
+                        boxcollider.isTrigger = true;
+                    }
+                    catch
+                    {
+                        boxcollider = selectedObject.AddComponent<BoxCollider2D>();
+                        boxcollider.isTrigger = true;
+                    }
+                }
             }
         }
     }
