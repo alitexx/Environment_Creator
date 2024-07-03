@@ -116,9 +116,11 @@ public class TileCategoryEditor : EditorWindow
         // If the tag doesn't exist, create it
         if (!TagHelper.TagExists(categoryName))
         {
-            TagHelper.AddTag(categoryName);
+            TagHelper.AddTag(categoryName, defaultEntity);
+        } else
+        {
+            defaultEntity.tag = categoryName;
         }
-        defaultEntity.tag = categoryName;
 
         PrefabUtility.SaveAsPrefabAsset(defaultEntity, $"{folderPath}/DefaultEntity.prefab");
         DestroyImmediate(defaultEntity);

@@ -4,7 +4,7 @@ using System.Linq;
 
 public static class TagHelper
 {
-    public static void AddTag(string tag)
+    public static void AddTag(string tag, GameObject assignTag = null)
     {
         UnityEngine.Object[] asset = AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset");
         if ((asset != null) && (asset.Length > 0))
@@ -20,10 +20,16 @@ public static class TagHelper
                 }
             }
 
-            tags.InsertArrayElementAtIndex(0);
-            tags.GetArrayElementAtIndex(0).stringValue = tag;
+            tags.InsertArrayElementAtIndex(tags.arraySize);
+            tags.GetArrayElementAtIndex(tags.arraySize - 1).stringValue = tag;
             so.ApplyModifiedProperties();
             so.Update();
+
+            //I do this here because there were issues with the assignment happening before the tag was implemented
+            if(assignTag != null)
+            {
+                assignTag.tag = tag;
+            }
         }
     }
 

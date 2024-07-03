@@ -235,10 +235,11 @@ public class CharacterCreationEditor : EditorWindow
         // If the tag doesn't exist, create it
         if (!TagHelper.TagExists("NPC"))
         {
-            TagHelper.AddTag("NPC");
+            TagHelper.AddTag("NPC", npcGameObject);
+        } else
+        {
+            npcGameObject.tag = "NPC";
         }
-        npcGameObject.tag = "NPC";
-
 
         //If we should update the prefab too, update prefab
         if(updatePrefab)
@@ -346,12 +347,13 @@ public class CharacterCreationEditor : EditorWindow
         // If the tag doesn't exist, create it
         if (!TagHelper.TagExists("PlayerCharacter"))
         {
-            TagHelper.AddTag("PlayerCharacter");
+            TagHelper.AddTag("PlayerCharacter", playerCharacterPrefab);
+        } else
+        {
+            playerCharacterPrefab.tag = "PlayerCharacter";
         }
-        playerCharacterPrefab.tag = "PlayerCharacter";
-
         // Assign default values
-        characterData.reach = reach;
+        GameSettings.interactRange = reach;
         characterData.animations = animations;
         characterData.startPosition = startPosition;
 

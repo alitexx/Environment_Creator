@@ -45,6 +45,7 @@ public class WorldBuilder : EditorWindow
     private PopupField<string> itemDropdown; // Dropdown for items in folder
     private string spawnedItem = "Default";
     private Transform teleportDestination;
+    private GameObject collectiblesMenu;
 
     private bool allowPlacementBool = true;
 
@@ -92,10 +93,11 @@ public class WorldBuilder : EditorWindow
         // If the tag doesn't exist, create it
         if (!TagHelper.TagExists("Editing"))
         {
-            TagHelper.AddTag("Editing");
+            TagHelper.AddTag("Editing", parentOBJ);
+        } else
+        {
+            parentOBJ.tag = "Editing";
         }
-
-        parentOBJ.tag = "Editing";
         tilePlacement.parentTransform = parentOBJ.transform;
         objectField.RegisterValueChangedCallback(evt =>
         {
@@ -517,14 +519,12 @@ public class WorldBuilder : EditorWindow
                     } else if (tileCategory == TileCategory.CollectibleSpawner)
                     {
                         //find prefab for collectible menu and put it in
-                        if (!TagHelper.TagExists("CollectiblesMenu"))
-                        {
-                            TagHelper.AddTag("CollectiblesMenu");
-                        }
+
                         //If there is not a game object with the collectibles menu tag, then there is not a collectible UI. add one.
-                        if (!GameObject.FindGameObjectWithTag("CollectiblesMenu"))
+                        if (collectiblesMenu == null)
                         {
-                            Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/EnvironmentCreator/Prefabs/UI/Collectibles Menu/Collectible UI.prefab"), Vector3.zero, Quaternion.identity);
+                            collectiblesMenu = Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/EnvironmentCreator/Prefabs/UI/Collectibles Menu/Collectible UI.prefab"), Vector3.zero, Quaternion.identity);
+                            collectiblesMenu.tag = "CollectiblesMenu"; 
                         }
                     }
 
@@ -541,7 +541,7 @@ public class WorldBuilder : EditorWindow
 
     private void OnEnable()
     {
-        Debug.Log("I am on!");
+        //Debug.Log("I am on!");
         tileReferenceSize = tilePlacement.tileReferenceSize;
         SceneView.duringSceneGui += OnSceneGUI;
 
@@ -558,12 +558,29 @@ public class WorldBuilder : EditorWindow
 
         // create a game object to be the parent of the objects created
         parentOBJ = new GameObject("New World (Game Object)");
-        parentOBJ.tag = "Editing";
+
+        // If the tag doesn't exist, create it
+        if (!TagHelper.TagExists("Editing"))
+        {
+            TagHelper.AddTag("Editing", parentOBJ);
+        }
+        else
+        {
+            parentOBJ.tag = "Editing";
+        }
+
+        if (!TagHelper.TagExists("CollectiblesMenu"))
+        {
+            TagHelper.AddTag("CollectiblesMenu");
+        } else
+        {
+            collectiblesMenu = GameObject.FindGameObjectWithTag("CollectiblesMenu");
+        }
     }
 
     private void OnDisable()
     {
-        Debug.Log("I am off!");
+        //Debug.Log("I am off!");
         tilePlacement.tileReferenceSize = tileReferenceSize;
         SceneView.duringSceneGui -= OnSceneGUI;
 
