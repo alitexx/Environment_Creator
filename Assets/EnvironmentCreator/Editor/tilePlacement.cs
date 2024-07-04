@@ -107,87 +107,8 @@ public class tilePlacement
 
             }
 
-            //Debug.Log("X = " + (Mathf.Abs((xSnap / xDimension) % (2))));
-
-            //Debug.Log("Y = " + (Mathf.Abs((ySnap / yDimension) % (2))));
-
-            //Debug.Log("Y Actual = " + (Mathf.Abs((ySnap / yDimension) % (2))) + " must be greater than " +(0.9f) + " and less than " + (1.1f));
-
-            //Debug.Log("X Actual = " + (Mathf.Abs((xSnap / xDimension) % (2))) + " must be greater than " + (1.4f) + " and less than " + (1.6f));
-
-
-            ////if x is around 1.5 and y is around 1
-            //if (Mathf.Abs((ySnap / yDimension) % (2)) >= (0.9f) && Mathf.Abs((ySnap / yDimension) % (2)) <= (1.1f) && Mathf.Abs((xSnap / xDimension) % (2*tileWidth)) >= (1.4f*tileWidth) && Mathf.Abs((xSnap / xDimension) % (2)) <= (1.6f))
-            //{
-            //    Debug.Log("Wrong space: X = 1.5, Y = 1");
-            //    //ySnap = Mathf.Round(posToPlace.y / (yDimension * 2)) * (yDimension * 2);
-            //    //Vector3 closestTile = FindClosestTile(xSnap, ySnap, posToPlace);
-            //    //Debug.Log("Adding " + closestTile.x + "(x) AND " + closestTile.y + "(y)");
-            //    //xSnap += closestTile.x;
-            //    //ySnap += closestTile.y;
-
-            ////if x is around 0.5 and y is around 2
-            //} else if (Mathf.Abs((ySnap / yDimension) % (2)) >= (1.9f) && Mathf.Abs((ySnap / yDimension) % (2)) <= (2.1f) && Mathf.Abs((xSnap / xDimension) % (2)) >= (0.4f) && Mathf.Abs((xSnap / xDimension) % (2)) <= (0.6f))
-            //{
-            //    Debug.Log("Wrong space: X = 0.5, Y = 2");
-            //    //ySnap = Mathf.Round(posToPlace.y / (yDimension * 2)) * (yDimension * 2);
-            //    //Vector3 closestTile = FindClosestTile(xSnap, ySnap, posToPlace);
-            //    //Debug.Log("Adding " + closestTile.x + "(x) AND " + closestTile.y + "(y)");
-            //    //xSnap += closestTile.x;
-            //    //ySnap += closestTile.y;
-
-            ////if x is around 0.5 and y is around 1
-            //}
-            //else if (Mathf.Abs((ySnap / yDimension) % (2)) >= (0.9f) && Mathf.Abs((ySnap / yDimension) % (2)) <= (1.1f) && Mathf.Abs((xSnap / xDimension) % (2)) >= (0.4f) && Mathf.Abs((xSnap / xDimension) % (2)) <= (0.6f))
-            //{
-            //    Debug.Log("Wrong space: X = 0.5, Y = 1");
-            //    //xSnap = Mathf.Round(posToPlace.x / (xDimension * 2)) * (xDimension * 2);
-            //    //Vector3 closestTile = FindClosestTile(xSnap, ySnap, posToPlace);
-            //    //Debug.Log("Adding " + closestTile.x + "(x) AND " + closestTile.y + "(y)");
-            //    //xSnap += closestTile.x;
-            //    //ySnap += closestTile.y;
-            
-            ////if x is around 1.5 and y is around 2
-            //}
-            //else if (Mathf.Abs((ySnap / yDimension) % (2)) >= (1.9f) && Mathf.Abs((ySnap / yDimension) % (2)) <= (2.1f) && Mathf.Abs((xSnap / xDimension) % (2)) >= (1.4f) && Mathf.Abs((xSnap / xDimension) % (2)) <= (1.6f))
-            //{
-            //    Debug.Log("Wrong space: X = 0.5, Y = 2");
-            //    //xSnap = Mathf.Round(posToPlace.x / (xDimension * 2)) * (xDimension * 2);
-            //    //Vector3 closestTile = FindClosestTile(xSnap, ySnap, posToPlace);
-            //    //Debug.Log("Adding " + closestTile.x + "(x) AND " + closestTile.y + "(y)");
-            //    //xSnap += closestTile.x;
-            //    //ySnap += closestTile.y;
-            //}
-
-            //else
-            //{
-            //    //ySnap -= (yDimension);
-            //}
-
-            if (posToPlace.x > 0)
-            {
-                xSnap -= (xDimension);
-            }
-            else
-            {
-                xSnap += (xDimension);
-            }
-
-            if (posToPlace.y > 0)
-            {
-                ySnap += (yDimension);
-            }
-            else
-            {
-                ySnap -= (yDimension);
-            }
-
-            if(posToPlace.x < 0 && posToPlace.y < 0)
-            {
-                xSnap -= (xDimension*2);
-                //ySnap += (yDimension);
-            }
-            //ySnap -= (yDimension);
+            xSnap -= (xDimension);
+            ySnap -= (yDimension);
             //ySnap -= (yDimension*2);
         }
 
