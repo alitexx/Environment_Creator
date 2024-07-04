@@ -11,6 +11,7 @@ TagManager:
   - PlayerCharacter
   - Editing
   - CollectiblesMenu
+  - Default
   layers:
   - Default
   - TransparentFX

@@ -434,8 +434,7 @@ public class WorldBuilder : EditorWindow
                     //add tileCategory.cs
 
                     GameObject newPrefab = new GameObject("DefaultEntity");
-                    newPrefab.AddComponent<SpriteRenderer>();
-                    newPrefab.GetComponent<SpriteRenderer>().sprite = selectedSprite;
+                    newPrefab.AddComponent<SpriteRenderer>().sprite = selectedSprite;
                     newPrefab.AddComponent<tileCategory>();
                     PrefabUtility.SaveAsPrefabAsset(newPrefab, "Assets/EnvironmentCreator/Prefabs/Tiles/" + selectedSprite.name + ".prefab");
                     DestroyImmediate(newPrefab);
@@ -604,7 +603,7 @@ public class WorldBuilder : EditorWindow
         GameObject background = new GameObject("Background");
 
         // Add a Sprite Renderer component
-        SpriteRenderer renderer = background.AddComponent<SpriteRenderer>();
+        SpriteRenderer renderer = ComponentHelper.GetOrAddComponent<SpriteRenderer>(background);
         renderer.sprite = backgroundImage;
 
         // Set the sorting layer to a background layer and the order to a low value

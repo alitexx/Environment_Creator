@@ -181,8 +181,9 @@ public class CharacterCreationEditor : EditorWindow
         //Check for pre-existing components. if there are pre existing components, delete them.
         if(canMove)
         {
-            NPCMovement npcmovement = npcGameObject.AddComponent<NPCMovement>();
-            if(movementType == MovementType.Random)
+            
+            NPCMovement npcmovement = ComponentHelper.GetOrAddComponent<NPCMovement>(npcGameObject);
+            if (movementType == MovementType.Random)
             {
                 npcmovement.SetValues(movementSpeed, moveFrequency, setPositions, false, waitTime);
             }
@@ -192,15 +193,7 @@ public class CharacterCreationEditor : EditorWindow
             }
             
             string prefabPath = "Assets/EnvironmentCreator/Prefabs/NPC";
-            Animator animator;
-            try
-            {
-                animator = npcGameObject.AddComponent<Animator>();
-            }
-            catch
-            {
-                animator = npcGameObject.GetComponent<Animator>();
-            }
+            Animator animator = ComponentHelper.GetOrAddComponent<Animator>(npcGameObject);
 
             // Implementation for updating this specific NPC game object
             AnimatorController animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(prefabPath + "/PlayerAnimController.controller");
@@ -227,7 +220,7 @@ public class CharacterCreationEditor : EditorWindow
         }
         if(canInteract)
         {
-            NPCInteract npcinteract = npcGameObject.AddComponent<NPCInteract>();
+            NPCInteract npcinteract = ComponentHelper.GetOrAddComponent<NPCInteract>(npcGameObject);
             npcinteract.popup = interactionPopupBox;
             npcinteract.popuptext = interactionText;
         }
@@ -293,23 +286,17 @@ public class CharacterCreationEditor : EditorWindow
     private void CreatePlayerCharacterPrefab()
     {
         string prefabPath = "Assets/EnvironmentCreator/Prefabs/Player Character";
-        Animator animator;
         playerCharacterPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath + "/PlayerCharacter.prefab");
 
         if (playerCharacterPrefab == null)
         {
             playerCharacterPrefab = new GameObject("PlayerCharacter");
         }
-        PlayerMovement playerMovement = playerCharacterPrefab.AddComponent<PlayerMovement>();
-        try
-        {
-            animator = playerCharacterPrefab.AddComponent<Animator>();
-        } catch
-        {
-            animator = playerCharacterPrefab.GetComponent<Animator>();
-        }
-        //Animator animator = playerCharacterPrefab.AddComponent<Animator>();
-        CharacterData characterData = playerCharacterPrefab.AddComponent<CharacterData>();
+
+
+        Animator animator = ComponentHelper.GetOrAddComponent<Animator>(playerCharacterPrefab);
+        PlayerMovement playerMovement = ComponentHelper.GetOrAddComponent<PlayerMovement>(playerCharacterPrefab);
+        CharacterData characterData = ComponentHelper.GetOrAddComponent<CharacterData>(playerCharacterPrefab);
 
         AnimatorController animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(prefabPath + "/PlayerAnimController.controller");
         if (animatorController != null)
@@ -369,8 +356,11 @@ public class CharacterCreationEditor : EditorWindow
         }
 
         //Add Rigidbody and colliders for collisions
-        Rigidbody2D rigidbody2D = playerCharacterPrefab.AddComponent<Rigidbody2D>();
-        BoxCollider2D boxCollider2D = playerCharacterPrefab.AddComponent<BoxCollider2D>();
+        Rigidbody2D rigidbody2D = ComponentHelper.GetOrAddComponent<Rigidbody2D>(playerCharacterPrefab);
+        BoxCollider2D boxCollider2D = ComponentHelper.GetOrAddComponent<BoxCollider2D>(playerCharacterPrefab);
+
+        //Set Rigidbody settings so it doesnt have physics
+        rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
 
         PrefabUtility.SaveAsPrefabAsset(playerCharacterPrefab, prefabPath + "/PlayerCharacter.prefab");
         //DestroyImmediate(playerCharacterPrefab);
@@ -383,11 +373,7 @@ public class CharacterCreationEditor : EditorWindow
             return;
         }
 
-        CameraMovement camMovement = camera.GetComponent<CameraMovement>();
-        if (camMovement == null)
-        {
-            camMovement = camera.AddComponent<CameraMovement>();
-        }
+        CameraMovement camMovement = ComponentHelper.GetOrAddComponent<CameraMovement>(camera);
         camMovement.player = playerCharacterPrefab.transform;
     }
 

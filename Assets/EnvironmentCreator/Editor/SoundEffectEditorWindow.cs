@@ -65,11 +65,7 @@ public class SoundEffectEditorWindow : EditorWindow
     {
         if (selectedObject != null && selectedClip != null)
         {
-            AudioSource audioSource = selectedObject.GetComponent<AudioSource>();
-            if (audioSource == null)
-            {
-                audioSource = selectedObject.AddComponent<AudioSource>();
-            }
+            AudioSource audioSource = ComponentHelper.GetOrAddComponent<AudioSource>(selectedObject);
 
             audioSource.clip = selectedClip;
             audioSource.loop = loop;
@@ -78,26 +74,13 @@ public class SoundEffectEditorWindow : EditorWindow
             if (isTriggered)
             {
                 audioSource.playOnAwake = false;
-                TriggeredSound triggeredSound = selectedObject.GetComponent<TriggeredSound>();
-                if (triggeredSound == null)
-                {
-                    triggeredSound = selectedObject.AddComponent<TriggeredSound>();
-                }
+                TriggeredSound triggeredSound = ComponentHelper.GetOrAddComponent<TriggeredSound>(selectedObject);
                 triggeredSound.triggerType = (TriggeredSound.TriggerType)selectedTrigger;
                 triggeredSound.interval = interval;
                 if((TriggeredSound.TriggerType)selectedTrigger == TriggeredSound.TriggerType.Colliding)
                 {
-                    BoxCollider2D boxcollider;
-                    try
-                    {
-                        boxcollider = selectedObject.GetComponent<BoxCollider2D>();
-                        boxcollider.isTrigger = true;
-                    }
-                    catch
-                    {
-                        boxcollider = selectedObject.AddComponent<BoxCollider2D>();
-                        boxcollider.isTrigger = true;
-                    }
+                    BoxCollider2D boxcollider = ComponentHelper.GetOrAddComponent<BoxCollider2D>(selectedObject);
+                    boxcollider.isTrigger = true;
                 }
             }
         }
