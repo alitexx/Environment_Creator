@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,9 +16,13 @@ public class NPCMovement : MonoBehaviour
     private int currentSetPositionIndex = 0;
     private Vector3 targetPosition;
 
+    private Animator animator;
+
     private void Start()
     {
         referenceSpace = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/EnvironmentCreator/Prefabs/ReferenceTile.prefab").transform.localScale;
+        animator = GetComponent<Animator>();
+
         if (isSetPositions)
         {
             if (setPositions.Length > 0)
@@ -39,8 +42,6 @@ public class NPCMovement : MonoBehaviour
         this.setPositions = setPositions;
         this.isSetPositions = isSetPositions;
         this.waitTime = waitTime;
-
-        Debug.Log("isSetPositions has been set to " + this.isSetPositions);
     }
 
     private IEnumerator MoveRandomly()
@@ -86,8 +87,8 @@ public class NPCMovement : MonoBehaviour
         int randomIndex = Random.Range(0, 4);
         switch (randomIndex)
         {
-            case 0: return Vector3.forward;
-            case 1: return Vector3.back;
+            case 0: return Vector3.up;
+            case 1: return Vector3.down;
             case 2: return Vector3.left;
             case 3: return Vector3.right;
         }
@@ -101,12 +102,24 @@ public class NPCMovement : MonoBehaviour
             if (isPaused)
                 yield return null;
 
+            Vector3 direction = (position - transform.position).normalized;
             transform.position = Vector3.MoveTowards(transform.position, position, movementSpeed * Time.deltaTime);
+
+            // Update animator parameters
+            animator.SetFloat("Horizontal", direction.x);
+            animator.SetFloat("Vertical", direction.y);
+            animator.SetFloat("Speed", direction.magnitude);
+
             yield return null;
         }
         transform.position = position;
+
+        // Reset speed when NPC stops
+        animator.SetFloat("Speed", 0f);
     }
 
+
+    //In case the NPC needs to be frozen (pause screen)
     public void SetPause(bool pause)
     {
         isPaused = pause;

@@ -16,7 +16,6 @@ public class CharacterCreationEditor : EditorWindow
     private GameObject playerCharacterPrefab;
     private AnimationClip[] animations = new AnimationClip[9];
     private float walkSpeed = 1f;
-    private float reach = 1f;
     private Transform startPosition;
 
     // NPC Editor variables
@@ -90,7 +89,6 @@ public class CharacterCreationEditor : EditorWindow
             EditorGUILayout.EndVertical();
 
             walkSpeed = EditorGUILayout.FloatField("Walk Speed", walkSpeed);
-            reach = EditorGUILayout.FloatField("Reach", reach);
             startPosition = (Transform)EditorGUILayout.ObjectField("Start Position", startPosition, typeof(Transform), true);
         }
         else
@@ -194,6 +192,9 @@ public class CharacterCreationEditor : EditorWindow
             
             string prefabPath = "Assets/EnvironmentCreator/Prefabs/NPC";
             Animator animator = ComponentHelper.GetOrAddComponent<Animator>(npcGameObject);
+            SpriteRenderer npcSprite = ComponentHelper.GetOrAddComponent<SpriteRenderer>(npcGameObject);
+            npcSprite.sprite = GetFirstSpriteFromAnimation(npcAnimations[4]);
+
 
             // Implementation for updating this specific NPC game object
             AnimatorController animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(prefabPath + "/PlayerAnimController.controller");
@@ -224,6 +225,17 @@ public class CharacterCreationEditor : EditorWindow
             npcinteract.popup = interactionPopupBox;
             npcinteract.popuptext = interactionText;
         }
+
+        //Add Rigidbody and colliders for collisions
+        Rigidbody2D rigidbody2D = ComponentHelper.GetOrAddComponent<Rigidbody2D>(npcGameObject);
+        BoxCollider2D boxCollider2D = ComponentHelper.GetOrAddComponent<BoxCollider2D>(npcGameObject);
+
+        //Set Rigidbody settings so it doesnt have physics
+        rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
+        rigidbody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
+        rigidbody2D.isKinematic = true;
+        rigidbody2D.gravityScale = 0;
+
 
         // If the tag doesn't exist, create it
         if (!TagHelper.TagExists("NPC"))
@@ -344,7 +356,6 @@ public class CharacterCreationEditor : EditorWindow
             playerCharacterPrefab.tag = "PlayerCharacter";
         }
         // Assign default values
-        GameSettings.interactRange = reach;
         characterData.animations = animations;
         characterData.startPosition = startPosition;
 
