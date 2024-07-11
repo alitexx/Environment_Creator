@@ -297,6 +297,10 @@ public class CharacterCreationEditor : EditorWindow
         Animator animator = ComponentHelper.GetOrAddComponent<Animator>(playerCharacterPrefab);
         PlayerMovement playerMovement = ComponentHelper.GetOrAddComponent<PlayerMovement>(playerCharacterPrefab);
         CharacterData characterData = ComponentHelper.GetOrAddComponent<CharacterData>(playerCharacterPrefab);
+        //I don't think I need to use this in code, but putting it here
+
+        SpriteRenderer charSprite = ComponentHelper.GetOrAddComponent<SpriteRenderer>(playerCharacterPrefab);
+        charSprite.sprite = GetFirstSpriteFromAnimation(animations[4]);
 
         AnimatorController animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(prefabPath + "/PlayerAnimController.controller");
         if (animatorController != null)
@@ -384,63 +388,51 @@ public class CharacterCreationEditor : EditorWindow
     {
         AnimatorStateMachine rootStateMachine = controller.layers[0].stateMachine;
 
-        // Create states
-        AnimatorState[] states = new AnimatorState[animations.Length];
+        // Create a blend tree
+        AnimatorState blendTreeState = rootStateMachine.AddState("MovementBlendTree");
+        blendTreeState.motion = CreateBlendTree(controller, animations);
 
-        //Define Idle animation state first (default anim state)
+        // Create an Idle state
+        AnimatorState idleState = rootStateMachine.AddState("Idle");
+        idleState.motion = animations[4]; // Assuming 4 is the index for Idle animation
 
-        states[0] = rootStateMachine.AddState(FindAnimationName(4));
-        states[0].motion = animations[4];
-        int offsetAdd = 1;
-        //Define all animation states in animator
-        for (int i = 0; i < animations.Length; i++)
-        {
-            if (i == 4)
-            {
-                offsetAdd = 0;
-                continue;
-            }
-            states[i+offsetAdd] = rootStateMachine.AddState(FindAnimationName(i));
-            states[i+offsetAdd].motion = animations[i];
-        }
-
-        // Create transitions based on conditions
-        AddTransition(rootStateMachine, rootStateMachine.defaultState, states[0], "Speed", 0.15f, true);                          // Idle
-        AddTransition(rootStateMachine, rootStateMachine.defaultState, states[1], "Horizontal", -0.5f, true, "Vertical", 0.5f, false);  // North West
-        AddTransition(rootStateMachine, rootStateMachine.defaultState, states[2], "Vertical", 0.5f, false);                          // North
-        AddTransition(rootStateMachine, rootStateMachine.defaultState, states[3], "Horizontal", 0.5f, false, "Vertical", 0.5f, false); // North East
-        AddTransition(rootStateMachine, rootStateMachine.defaultState, states[4], "Horizontal", -0.5f, false);                        // West
-        AddTransition(rootStateMachine, rootStateMachine.defaultState, states[5], "Horizontal", 0.5f, false);                        // East
-        AddTransition(rootStateMachine, rootStateMachine.defaultState, states[6], "Horizontal", -0.5f, true, "Vertical", -0.5f, false); // South West
-        AddTransition(rootStateMachine, rootStateMachine.defaultState, states[7], "Vertical", -0.5f, false);                          // South
-        AddTransition(rootStateMachine, rootStateMachine.defaultState, states[8], "Horizontal", 0.5f, false, "Vertical", -0.5f, false); // South East
-
-        // Add transitions to idle state from any state
-        for (int i = 0; i < states.Length; i++)
-        {
-            if (i == 0)
-            {
-                continue;
-            }
-            AddTransitionToIdle(rootStateMachine, states[i], states[0]);
-        }
+        // Create a transition from Idle to BlendTree and vice versa
+        AddTransition(rootStateMachine, idleState, blendTreeState, "Speed", 0.15f, false);
+        AddTransition(rootStateMachine, blendTreeState, idleState, "Speed", 0.15f, true);
 
         return controller;
     }
 
-    private void AddTransitionToIdle(AnimatorStateMachine stateMachine, AnimatorState fromState, AnimatorState idleState)
-    {
-        AnimatorStateTransition transition = fromState.AddTransition(idleState);
-        transition.hasExitTime = false;
-        transition.hasFixedDuration = true;
-        transition.exitTime = 0;
-        transition.duration = 0;
 
-        // Set condition for transitioning to idle state (e.g., Speed == 0)
-        transition.AddCondition(AnimatorConditionMode.Less, 0.15f, "Speed");
+    private BlendTree CreateBlendTree(AnimatorController controller, AnimationClip[] animations)
+    {
+        BlendTree blendTree = new BlendTree();
+        blendTree.name = "MovementBlendTree";
+        blendTree.blendType = BlendTreeType.SimpleDirectional2D;
+        blendTree.blendParameter = "Horizontal";
+        blendTree.blendParameterY = "Vertical";
+
+        blendTree.useAutomaticThresholds = false;
+
+        // Add Idle animation
+        blendTree.AddChild(animations[4], new Vector2(0, 0)); // Idle
+
+        // Add movement animations if they exist
+        if (animations[0] != null) blendTree.AddChild(animations[0], new Vector2(-1, 1)); // MoveUpLeft
+        if (animations[1] != null) blendTree.AddChild(animations[1], new Vector2(0, 1));  // MoveUp
+        if (animations[2] != null) blendTree.AddChild(animations[2], new Vector2(1, 1));  // MoveUpRight
+        if (animations[3] != null) blendTree.AddChild(animations[3], new Vector2(-1, 0)); // MoveLeft
+        if (animations[5] != null) blendTree.AddChild(animations[5], new Vector2(1, 0));  // MoveRight
+        if (animations[6] != null) blendTree.AddChild(animations[6], new Vector2(-1, -1)); // MoveDownLeft
+        if (animations[7] != null) blendTree.AddChild(animations[7], new Vector2(0, -1)); // MoveDown
+        if (animations[8] != null) blendTree.AddChild(animations[8], new Vector2(1, -1)); // MoveDownRight
+
+        return blendTree;
     }
 
-    private void AddTransition(AnimatorStateMachine stateMachine, AnimatorState fromState, AnimatorState toState, string param1, float threshold1, bool isLess1 = false, string param2 = null, float threshold2 = 0, bool isLess2 = false)
+
+
+    private void AddTransition(AnimatorStateMachine stateMachine, AnimatorState fromState, AnimatorState toState, string param1, float threshold1, bool isLess1)
     {
         AnimatorStateTransition transition = fromState.AddTransition(toState);
         transition.hasExitTime = false;
@@ -450,12 +442,6 @@ public class CharacterCreationEditor : EditorWindow
 
         AnimatorConditionMode mode1 = isLess1 ? AnimatorConditionMode.Less : AnimatorConditionMode.Greater;
         transition.AddCondition(mode1, threshold1, param1);
-
-        if (!string.IsNullOrEmpty(param2))
-        {
-            AnimatorConditionMode mode2 = isLess2 ? AnimatorConditionMode.Less : AnimatorConditionMode.Greater;
-            transition.AddCondition(mode2, threshold2, param2);
-        }
     }
 
     private void ClearAnimatorController(AnimatorController animatorController)
@@ -465,36 +451,37 @@ public class CharacterCreationEditor : EditorWindow
         rootStateMachine.states = new ChildAnimatorState[0];
         rootStateMachine.anyStateTransitions = new AnimatorStateTransition[0];
         rootStateMachine.entryTransitions = new AnimatorTransition[0];
-
         // Clear all parameters
         animatorController.parameters = new AnimatorControllerParameter[0];
     }
 
-    private string FindAnimationName(int iteration)
+    private Sprite GetFirstSpriteFromAnimation(AnimationClip clip)
     {
-        switch (iteration)
+        // Get all bindings in the animation clip
+        if (clip == null)
         {
-            case 0:
-                return "North West";
-            case 1:
-                return "North";
-            case 2:
-                return "North East";
-            case 3:
-                return "West";
-            case 4:
-                return "Idle";
-            case 5:
-                return "East";
-            case 6:
-                return "South West";
-            case 7:
-                return "South";
-            case 8:
-                return "South East";
-            default:
-                return "???";
+            return null;
         }
+        var bindings = AnimationUtility.GetObjectReferenceCurveBindings(clip);
+
+        // Find the binding that corresponds to the SpriteRenderer
+        foreach (var binding in bindings)
+        {
+            if (binding.type == typeof(SpriteRenderer) && binding.propertyName == "m_Sprite")
+            {
+                var keyframes = AnimationUtility.GetObjectReferenceCurve(clip, binding);
+                if (keyframes.Length > 0)
+                {
+                    // Return the first sprite
+                    return (Sprite)keyframes[0].value;
+                }
+            }
+        }
+
+        return null;
     }
 
 }
+
+
+
