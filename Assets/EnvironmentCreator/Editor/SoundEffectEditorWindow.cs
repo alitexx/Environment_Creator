@@ -23,6 +23,8 @@ public class SoundEffectEditorWindow : EditorWindow
     {
         GUILayout.Label("Sound Effect Settings", EditorStyles.boldLabel);
 
+        selectedObject = (GameObject)EditorGUILayout.ObjectField("Game Object", selectedObject, typeof(GameObject), true);
+
         selectedClip = (AudioClip)EditorGUILayout.ObjectField("Sound Effect", selectedClip, typeof(AudioClip), false);
 
         if (selectedClip != null)
@@ -46,8 +48,6 @@ public class SoundEffectEditorWindow : EditorWindow
                     interval = EditorGUILayout.FloatField("Interval (seconds)", interval);
                 }
             }
-
-            selectedObject = (GameObject)EditorGUILayout.ObjectField("Game Object", selectedObject, typeof(GameObject), true);
 
             if (GUILayout.Button("Update Game Object"))
             {
