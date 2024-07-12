@@ -59,6 +59,7 @@ public class tileCategory : MonoBehaviour
         if (CanCollide && gameObject.GetComponent<BoxCollider2D>() == null)
         {
             gameObject.AddComponent<BoxCollider2D>();
+            Debug.Log("Added a collider to the placed game object. Please check it's BoxCollider2D component and shape it to the sprite.");
         }
         else if (!CanCollide && gameObject.GetComponent<BoxCollider2D>() != null)
         {

@@ -513,7 +513,7 @@ public class WorldBuilder : EditorWindow
                         boxCollider2D.isTrigger = true;
                         Teleport teleportScript = instance.AddComponent<Teleport>();
                         teleportScript.targetLocation = teleportDestination;
-
+                        Debug.Log("Tile with teleport tile category updated! Please check it's BoxCollider2D component and shape it to the sprite.");
                         return;
                     } else if (tileCategory == TileCategory.CollectibleSpawner)
                     {

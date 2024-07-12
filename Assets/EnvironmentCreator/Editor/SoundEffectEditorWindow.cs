@@ -81,6 +81,7 @@ public class SoundEffectEditorWindow : EditorWindow
                 {
                     BoxCollider2D boxcollider = ComponentHelper.GetOrAddComponent<BoxCollider2D>(selectedObject);
                     boxcollider.isTrigger = true;
+                    Debug.Log("Game Object updated! Please check it's BoxCollider2D component and shape it to the sprite.");
                 }
             }
         }

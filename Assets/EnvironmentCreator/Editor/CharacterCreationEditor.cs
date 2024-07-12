@@ -251,6 +251,8 @@ public class CharacterCreationEditor : EditorWindow
         {
             UpdateAllNPCsOfType();
         }
+
+        Debug.Log("NPC updated! Please check it's BoxCollider2D component and shape it to the sprite.");
     }
 
     private void UpdateAllNPCsOfType()
@@ -393,6 +395,8 @@ public class CharacterCreationEditor : EditorWindow
 
         CameraMovement camMovement = ComponentHelper.GetOrAddComponent<CameraMovement>(camera);
         camMovement.player = playerCharacterPrefab.transform;
+
+        Debug.Log("Player Character updated! Please check it's BoxCollider2D component and shape it to the sprite.");
     }
 
     private AnimatorController CreateStatesAndTransitions(AnimatorController controller, AnimationClip[] animations)
