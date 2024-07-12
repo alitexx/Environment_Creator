@@ -299,7 +299,14 @@ public class CharacterCreationEditor : EditorWindow
 
     private void CreatePlayerCharacterPrefab()
     {
-        string prefabPath = "Assets/EnvironmentCreator/Prefabs/Player Character";
+        string prefabPath = "Assets/EnvironmentCreator/Prefabs";
+        // Ensure the target folder exists
+        if (!AssetDatabase.IsValidFolder($"{prefabPath}/Player Character"))
+        {
+            AssetDatabase.CreateFolder(prefabPath, "Player Character");
+        }
+        prefabPath = "Assets/EnvironmentCreator/Prefabs/Player Character";
+
         playerCharacterPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath + "/PlayerCharacter.prefab");
 
         if (playerCharacterPrefab == null)
