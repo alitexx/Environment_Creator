@@ -197,7 +197,7 @@ public class CharacterCreationEditor : EditorWindow
 
 
             // Implementation for updating this specific NPC game object
-            AnimatorController animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(prefabPath + "/PlayerAnimController.controller");
+            AnimatorController animatorController = AssetDatabase.LoadAssetAtPath<AnimatorController>(prefabPath + "/NPCAnimController.controller");
             if (animatorController != null)
             {
                 ClearAnimatorController(animatorController);
@@ -205,7 +205,7 @@ public class CharacterCreationEditor : EditorWindow
             else
             {
                 // Create a new Animator Controller
-                animatorController = AnimatorController.CreateAnimatorControllerAtPath(prefabPath + "/PlayerAnimController.controller");
+                animatorController = AnimatorController.CreateAnimatorControllerAtPath(prefabPath + "/NPCAnimController.controller");
             }
 
 
