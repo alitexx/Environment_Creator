@@ -504,7 +504,7 @@ public class WorldBuilder : EditorWindow
                     {
 
                         //add the fade if it isnt already in the scene
-                        if (!teleporterFade && GameObject.FindGameObjectWithTag("Teleport"))
+                        if (!teleporterFade)
                         {
                             // Instantiate the object at the valid position
                             teleporterFade= Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/EnvironmentCreator/Prefabs/Teleport/DefaultTeleporter.prefab"), Vector3.zero, Quaternion.identity);

@@ -46,6 +46,11 @@ public class CollectiblesMenuBuilder : MonoBehaviour
 
         foreach (var collectible in collectibles)
         {
+            //Does not count the default
+            if (collectible.name == "DefaultCollectible")
+            {
+                continue;
+            }
             if (currentHolder.transform.childCount >= maxItemsPerHolder)
             {
                 currentHolder = CreateNewItemHolder();

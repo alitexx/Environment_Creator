@@ -440,14 +440,14 @@ public class CharacterCreationEditor : EditorWindow
         blendTree.AddChild(animations[4], new Vector2(0, 0)); // Idle
 
         // Add movement animations if they exist
-        if (animations[0] != null) blendTree.AddChild(animations[0], new Vector2(-1, 1)); // MoveUpLeft
-        if (animations[1] != null) blendTree.AddChild(animations[1], new Vector2(0, 1));  // MoveUp
-        if (animations[2] != null) blendTree.AddChild(animations[2], new Vector2(1, 1));  // MoveUpRight
-        if (animations[3] != null) blendTree.AddChild(animations[3], new Vector2(-1, 0)); // MoveLeft
-        if (animations[5] != null) blendTree.AddChild(animations[5], new Vector2(1, 0));  // MoveRight
-        if (animations[6] != null) blendTree.AddChild(animations[6], new Vector2(-1, -1)); // MoveDownLeft
-        if (animations[7] != null) blendTree.AddChild(animations[7], new Vector2(0, -1)); // MoveDown
-        if (animations[8] != null) blendTree.AddChild(animations[8], new Vector2(1, -1)); // MoveDownRight
+        if (animations[0] != null) blendTree.AddChild(animations[0], new Vector2(-0.1f, 0.1f)); // MoveUpLeft
+        if (animations[1] != null) blendTree.AddChild(animations[1], new Vector2(0, 0.1f));  // MoveUp
+        if (animations[2] != null) blendTree.AddChild(animations[2], new Vector2(0.1f, 0.1f));  // MoveUpRight
+        if (animations[3] != null) blendTree.AddChild(animations[3], new Vector2(-0.1f, 0)); // MoveLeft
+        if (animations[5] != null) blendTree.AddChild(animations[5], new Vector2(0.1f, 0));  // MoveRight
+        if (animations[6] != null) blendTree.AddChild(animations[6], new Vector2(-0.1f, -0.1f)); // MoveDownLeft
+        if (animations[7] != null) blendTree.AddChild(animations[7], new Vector2(0, -0.1f)); // MoveDown
+        if (animations[8] != null) blendTree.AddChild(animations[8], new Vector2(0.1f, -0.1f)); // MoveDownRight
 
         return blendTree;
     }

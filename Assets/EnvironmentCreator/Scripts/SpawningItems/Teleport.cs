@@ -9,12 +9,16 @@ public class Teleport : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("I HIT SOMETHING!");
         if (other.CompareTag("PlayerCharacter"))
         {
+            if(targetLocation == null)
+            {
+                Debug.LogError("Please set a teleport location, it is currently set to null.");
+                return;
+            }
+
             if (useFadeTransition)
             {
-                Debug.Log(other.gameObject);
                 StartCoroutine(FadeAndTeleport(other.gameObject));
             }
             else

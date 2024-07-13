@@ -12,6 +12,7 @@ TagManager:
   - Editing
   - CollectiblesMenu
   - Default
+  - Collectible
   layers:
   - Default
   - TransparentFX
