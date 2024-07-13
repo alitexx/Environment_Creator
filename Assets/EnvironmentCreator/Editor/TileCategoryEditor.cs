@@ -57,13 +57,24 @@ public class TileCategoryEditor : EditorWindow
 
         if (GUILayout.Button("Delete Tile Category"))
         {
-            if (selectedCategoryToDelete == TileCategory.Default)
+            switch (selectedCategoryToDelete)
             {
-                Debug.LogError("Cannot delete the default category.");
-            }
-            else if (EditorUtility.DisplayDialog("Confirm Deletion", "Are you sure you want to delete the tile category [" + selectedCategoryToDelete.ToString() + "]? This cannot be undone.", "Yes", "No"))
-            {
-                DeleteTileCategory(selectedCategoryToDelete.ToString().Replace("Spawner", ""));
+                case TileCategory.Default:
+                    Debug.LogError("Cannot delete the default category.");
+                    break;
+                case TileCategory.CollectibleSpawner:
+                case TileCategory.NPCSpawner:
+                case TileCategory.PopUpSpawner:
+                case TileCategory.TomeSpawner:
+                case TileCategory.TeleportSpawner:
+                    Debug.LogError("Cannot delete pre-made tile categories.");
+                    break;
+                default:
+                    if (EditorUtility.DisplayDialog("Confirm Deletion", "Are you sure you want to delete the tile category [" + selectedCategoryToDelete.ToString() + "]? This cannot be undone.", "Yes", "No"))
+                    {
+                        DeleteTileCategory(selectedCategoryToDelete.ToString().Replace("Spawner", ""));
+                    }
+                    break;
             }
         }
     }
