@@ -89,9 +89,9 @@ public class SoundEffectEditorWindow : EditorWindow
             triggeredSound.interval = interval;
             if ((TriggeredSound.TriggerType)selectedTrigger == TriggeredSound.TriggerType.Colliding)
             {
-                BoxCollider2D boxcollider = ComponentHelper.GetOrAddComponent<BoxCollider2D>(selectedObject);
-                boxcollider.isTrigger = true;
-                Debug.Log("Game Object updated! Please check it's BoxCollider2D component and shape it to the sprite.");
+                PolygonCollider2D collider2D = ComponentHelper.GetOrAddComponent<PolygonCollider2D>(selectedObject);
+                collider2D.isTrigger = true;
+                //Debug.Log("Game Object updated! Please check it's BoxCollider2D component and shape it to the sprite.");
             }
         }
         return selectedObject;

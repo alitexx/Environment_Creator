@@ -56,14 +56,14 @@ public class tileCategory : MonoBehaviour
         this.CanCollide = canCollide;
         // If we should be colliding and there is not already a collider
         // NOTE: Maybe in the future, make a box collider variable.
-        if (CanCollide && gameObject.GetComponent<BoxCollider2D>() == null)
+        if (CanCollide && gameObject.GetComponent<PolygonCollider2D>() == null)
         {
-            gameObject.AddComponent<BoxCollider2D>();
-            Debug.Log("Added a collider to the placed game object. Please check it's BoxCollider2D component and shape it to the sprite.");
+            gameObject.AddComponent<PolygonCollider2D>();
+            //Debug.Log("Added a collider to the placed game object. Please check it's BoxCollider2D component and shape it to the sprite.");
         }
-        else if (!CanCollide && gameObject.GetComponent<BoxCollider2D>() != null)
+        else if (!CanCollide && gameObject.GetComponent<PolygonCollider2D>() != null)
         {
-            Destroy(gameObject.GetComponent<BoxCollider2D>());
+            Destroy(gameObject.GetComponent<PolygonCollider2D>());
         }
         if (tileCategory == this.TileCategory)
         {

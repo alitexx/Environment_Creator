@@ -8,6 +8,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.EventSystems;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 using ObjectField = UnityEditor.UIElements.ObjectField;
 
@@ -507,13 +508,14 @@ public class WorldBuilder : EditorWindow
                         if (!teleporterFade)
                         {
                             // Instantiate the object at the valid position
-                            teleporterFade= Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/EnvironmentCreator/Prefabs/Teleport/DefaultTeleporter.prefab"), Vector3.zero, Quaternion.identity);
+                            teleporterFade = Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/EnvironmentCreator/Prefabs/Teleport/DefaultTeleporter.prefab"), Vector3.zero, Quaternion.identity);
+                            teleporterFade.tag = "TeleporterFade";
                         }
-                        BoxCollider2D boxCollider2D = instance.AddComponent<BoxCollider2D>();
-                        boxCollider2D.isTrigger = true;
+                        PolygonCollider2D collider2D = ComponentHelper.GetOrAddComponent<PolygonCollider2D>(instance);
+                        collider2D.isTrigger = true;
                         Teleport teleportScript = instance.AddComponent<Teleport>();
                         teleportScript.targetLocation = teleportDestination;
-                        Debug.Log("Tile with teleport tile category updated! Please check it's BoxCollider2D component and shape it to the sprite.");
+                        Debug.Log("Tile with teleport tile category updated! Please check it's PolygonCollider2D component to make sure it fits your liking, you can also swap it for a BoxCollider2D for more personalized collisions.");
                         return;
                     } else if (tileCategory == TileCategory.CollectibleSpawner)
                     {
@@ -523,7 +525,16 @@ public class WorldBuilder : EditorWindow
                         if (collectiblesMenu == null)
                         {
                             collectiblesMenu = Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/EnvironmentCreator/Prefabs/UI/Collectibles Menu/Collectible UI.prefab"), Vector3.zero, Quaternion.identity);
-                            collectiblesMenu.tag = "CollectiblesMenu"; 
+                            collectiblesMenu.tag = "CollectiblesMenu";
+                            // Check if there is already an EventSystem in the scene
+                            EventSystem eventSystem = FindObjectOfType<EventSystem>();
+                            // If not, create a new EventSystem
+                            if (eventSystem == null)
+                            {
+                                GameObject eventSystemObject = new GameObject("EventSystem");
+                                eventSystemObject.AddComponent<EventSystem>();
+                                eventSystemObject.AddComponent<StandaloneInputModule>();
+                            }
                         }
                     }
 
@@ -568,12 +579,24 @@ public class WorldBuilder : EditorWindow
             parentOBJ.tag = "Editing";
         }
 
+        //Check if there's a Collectibles Menu object in the scene
         if (!TagHelper.TagExists("CollectiblesMenu"))
         {
             TagHelper.AddTag("CollectiblesMenu");
         } else
         {
             collectiblesMenu = GameObject.FindGameObjectWithTag("CollectiblesMenu");
+        }
+
+
+        //Check if there's a teleporter fade object in the scene
+        if (!TagHelper.TagExists("TeleporterFade"))
+        {
+            TagHelper.AddTag("TeleporterFade");
+        }
+        else
+        {
+            teleporterFade = GameObject.FindGameObjectWithTag("TeleporterFade");
         }
     }
 

@@ -25,6 +25,10 @@ public abstract class Spawner
             spawnedItem.name = prefabName;
             spawnedItem.GetComponent<FolderPlacement>().PlaceInFolder(prefabFolder);
             spawnedItem.GetComponent<FolderPlacement>().associatedGameObject = parentObj;
+            if (spawnedItem.GetComponent<SpriteRenderer>())
+            {
+                spawnedItem.GetComponent<SpriteRenderer>().sortingOrder = parentObj.GetComponent<SpriteRenderer>().sortingOrder + 1;
+            }
         }
         else
         {
