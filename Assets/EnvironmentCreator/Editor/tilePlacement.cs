@@ -55,30 +55,48 @@ public class tilePlacement
             if (Mathf.Abs((ySnap / yDimension) % 2) >= 0.9f && Mathf.Abs((xSnap / xDimension) % 2) <= 0.05f && Mathf.Abs((ySnap / yDimension) % 2) < 1.95f)
             {
                 //Debug.Log("Wrong space vertically");
-                //ySnap = Mathf.Round(posToPlace.y / (yDimension * 2)) * (yDimension * 2);
+                ySnap = Mathf.Round(posToPlace.y / (yDimension * 2)) * (yDimension * 2);
                 Vector3 closestTile = FindClosestTile(xSnap, ySnap, posToPlace);
-                //Debug.Log("Adding " + closestTile.x + "(x) AND " + closestTile.y +"(y)");
+                //Debug.Log("Adding " + closestTile.x + "(x) AND " + closestTile.y + "(y)");
                 xSnap += closestTile.x;
-                ySnap += closestTile.y;
+                //ySnap += closestTile.y;
             }
             // Wrong space horizontally
-            else if (Mathf.Abs((ySnap / yDimension) % 2) <= 0.05f && Mathf.Abs((xSnap / xDimension) % 2) >= 0.9f)
+            else if (Mathf.Abs((ySnap / yDimension) % 2) <= 0.05f && Mathf.Abs((xSnap / xDimension) % 2) >= 0.9f && Mathf.Abs((xSnap / xDimension) % 2) <= 1f)
             {
                 //Debug.Log("Wrong space horizontally");
-                //xSnap = Mathf.Round(posToPlace.x / (xDimension * 2)) * (xDimension * 2);
+                xSnap = Mathf.Round(posToPlace.x / (xDimension * 2)) * (xDimension * 2);
+                Vector3 closestTile = FindClosestTile(xSnap, ySnap, posToPlace);
+                //Debug.Log("Adding " + closestTile.x + "(x) AND " + closestTile.y + "(y)");
+                xSnap += closestTile.x;
+                //ySnap += closestTile.y;
+            }
+            else if ((Mathf.Abs((ySnap / yDimension) % 2) >= 1.9f && Mathf.Abs((xSnap / xDimension) % 2) >= 0.9f) && Mathf.Abs((xSnap / xDimension) % 2) <= 1f)
+            {
+                //Debug.Log("Wrong space horizontally (New function)");
+                xSnap = Mathf.Round(posToPlace.x / (xDimension * 2)) * (xDimension * 2);
+                Vector3 closestTile = FindClosestTile(xSnap, ySnap, posToPlace);
+                //Debug.Log("Adding " + closestTile.x + "(x) AND " + closestTile.y + "(y)");
+                xSnap += closestTile.x;
+                //ySnap += closestTile.y;
+            }
+            else if ((Mathf.Abs((ySnap / yDimension) % 2) >= 0.999f && Mathf.Abs((ySnap / yDimension) % 2) < 1.001f && Mathf.Abs((xSnap / xDimension) % 2) >= 1.999f) && Mathf.Abs((xSnap / xDimension) % 2) <= 2.001f)
+            {
+                //Debug.Log("Wrong space (New function)");
+                xSnap = Mathf.Round(posToPlace.x / (xDimension * 2)) * (xDimension * 2);
                 Vector3 closestTile = FindClosestTile(xSnap, ySnap, posToPlace);
                 //Debug.Log("Adding " + closestTile.x + "(x) AND " + closestTile.y + "(y)");
                 xSnap += closestTile.x;
                 ySnap += closestTile.y;
             }
-            else if ((Mathf.Abs((ySnap / yDimension) % 2) >= 1.9f && Mathf.Abs((xSnap / xDimension) % 2) >= 0.9f))
+            else if ((Mathf.Abs((ySnap / yDimension) % 2) >= 1.999f && Mathf.Abs((ySnap / yDimension) % 2) < 2.001f && Mathf.Abs((xSnap / xDimension) % 2) >= 0.999f) && Mathf.Abs((xSnap / xDimension) % 2) <= 1.001f)
             {
-                //Debug.Log("Wrong space horizontally (New function)");
-                //xSnap = Mathf.Round(posToPlace.x / (xDimension * 2)) * (xDimension * 2);
+                //Debug.Log("Wrong space (New function)");
+                xSnap = Mathf.Round(posToPlace.x / (xDimension * 2)) * (xDimension * 2);
                 Vector3 closestTile = FindClosestTile(xSnap, ySnap, posToPlace);
                 //Debug.Log("Adding " + closestTile.x + "(x) AND " + closestTile.y + "(y)");
                 xSnap += closestTile.x;
-                ySnap += closestTile.y;
+                //ySnap += closestTile.y;
             }
             else
             {
