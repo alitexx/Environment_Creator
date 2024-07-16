@@ -11,13 +11,17 @@ public class TextBubble : MonoBehaviour
     private string[] textSegments;
     private int currentSegmentIndex = 0;
     private float typingSpeed = 0.05f;
+    private float textSpeedMultiplier;
+    private KeyCode hurryUpKey;
     [SerializeField]private float normalTypingSpeed = 0.05f;
     [SerializeField]private float fastTypingSpeed = 0.025f; // Halved typing speed
     private Coroutine typingCoroutine;
     private bool isTyping = false;
 
-    public void Initialize(string fullText)
+    public void Initialize(string fullText, float textSpeedMultiplier)
     {
+        this.textSpeedMultiplier = textSpeedMultiplier;
+        hurryUpKey = GameSettings.hurryUpKey;
         textSegments = fullText.Split(new string[] { "\\n" }, System.StringSplitOptions.None);
         continueButton.onClick.AddListener(OnContinueButtonClicked);
         continueButton.gameObject.SetActive(false);
@@ -27,7 +31,7 @@ public class TextBubble : MonoBehaviour
 
     private void Update()
     {
-        if (isTyping && Input.GetKeyDown(KeyCode.Return))
+        if (isTyping && Input.GetKeyDown(hurryUpKey))
         {
             typingSpeed = fastTypingSpeed;
         }
@@ -52,7 +56,7 @@ public class TextBubble : MonoBehaviour
         foreach (char letter in segment.ToCharArray())
         {
             textMeshProUGUI.text += letter;
-            yield return new WaitForSeconds(typingSpeed);
+            yield return new WaitForSeconds(typingSpeed * textSpeedMultiplier);
         }
         FinishTyping();
     }

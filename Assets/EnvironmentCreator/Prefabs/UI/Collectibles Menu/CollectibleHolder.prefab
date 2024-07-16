@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5929064788743824882}
   - component: {fileID: 269501195480072068}
   m_Layer: 5
-  m_Name: Unobtained
+  m_Name: CollectibleHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -26,6 +26,7 @@ public class CharacterCreationEditor : EditorWindow
     private float moveFrequency = 1f;
     private AnimationClip[] npcAnimations = new AnimationClip[9];
     private bool canInteract = false;
+    private float textSpeedMultiplier = 1f;
     private GameObject interactionPopupBox;
     private string interactionText = "";
     private bool updatePrefab = false;
@@ -157,6 +158,7 @@ public class CharacterCreationEditor : EditorWindow
             if (canInteract)
             {
                 interactionPopupBox = (GameObject)EditorGUILayout.ObjectField("Interaction Popup Box", interactionPopupBox, typeof(GameObject), true);
+                textSpeedMultiplier = EditorGUILayout.FloatField("Text Speed Multiplier", textSpeedMultiplier);
                 interactionText = EditorGUILayout.TextArea(interactionText, GUILayout.Height(100));
             }
 
@@ -224,6 +226,7 @@ public class CharacterCreationEditor : EditorWindow
             NPCInteract npcinteract = ComponentHelper.GetOrAddComponent<NPCInteract>(npcGameObject);
             npcinteract.popup = interactionPopupBox;
             npcinteract.popuptext = interactionText;
+            npcinteract.textSpeedMultiplier = textSpeedMultiplier;
         }
 
         //Add Rigidbody and colliders for collisions
