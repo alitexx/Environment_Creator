@@ -501,7 +501,7 @@ public class WorldBuilder : EditorWindow
                     }
 
                     //Teleport spawner is special, so it doesn't have values placed or an object spawned on it.
-                    if(tileCategory == TileCategory.TeleportSpawner)
+                    if (tileCategory == TileCategory.TeleportSpawner)
                     {
 
                         //add the fade if it isnt already in the scene
@@ -517,7 +517,8 @@ public class WorldBuilder : EditorWindow
                         teleportScript.targetLocation = teleportDestination;
                         Debug.Log("Tile with teleport tile category updated! Please check it's PolygonCollider2D component to make sure it fits your liking, you can also swap it for a BoxCollider2D for more personalized collisions.");
                         return;
-                    } else if (tileCategory == TileCategory.CollectibleSpawner)
+                    }
+                    else if (tileCategory == TileCategory.CollectibleSpawner)
                     {
                         //find prefab for collectible menu and put it in
                         //If there is not a game object with the collectibles menu tag, then there is not a collectible UI. add one.
@@ -536,7 +537,6 @@ public class WorldBuilder : EditorWindow
                             }
                         }
                     }
-
                     instance.GetComponent<tileCategory>().SetValuesWhenPlaced(tileCategory, canCollide, spawnedItem);
                 } else
                 {
@@ -576,6 +576,12 @@ public class WorldBuilder : EditorWindow
         else
         {
             parentOBJ.tag = "Editing";
+        }
+
+        // This is for Tomes, I have to define it somewhere but there's not really a good place for it.
+        if (!TagHelper.TagExists("UI"))
+        {
+            TagHelper.AddTag("UI", parentOBJ);
         }
 
         //Check if there's a Collectibles Menu object in the scene

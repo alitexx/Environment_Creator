@@ -64,7 +64,14 @@ public class Tome : MonoBehaviour
             }
             // Instantiate the object at the valid position
             uiPanel = Instantiate(uiPanelPrefab);
-            uiPanel.transform.parent = GameObject.Find("UI").transform;
+            try
+            {
+                uiPanel.transform.SetParent(GameObject.Find("UI").transform);
+            } catch
+            {
+                uiPanel.transform.SetParent(new GameObject("UI").transform);
+            }
+            uiPanel.SetActive(false);
         }
     }
 
