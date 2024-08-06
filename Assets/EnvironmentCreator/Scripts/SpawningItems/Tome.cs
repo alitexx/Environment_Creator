@@ -49,10 +49,7 @@ public class Tome : MonoBehaviour
         
         if (uiPanel != null)
         {
-            // This code will break if Tome Text is renamed.
-            // If you are getting an error about this line of code, it is likely because Tome Text has been moved.
-            // Either move it back, rename the game object, or change the "Tome Text" parameter to the new name for the game object.
-            contentText = uiPanel.transform.Find("Tome Text").GetComponent<Text>();
+            
             uiPanel.SetActive(false); // Hide the UI panel initially
         } else
         {
@@ -102,6 +99,11 @@ public class Tome : MonoBehaviour
     // To find the close UI script, go to EnvironmentCreator/Scripts/TomeUI
     void OpenMenu()
     {
+        // This code will break if Tome Text is renamed.
+        // If you are getting an error about this line of code, it is likely because Tome Text has been moved.
+        // Either move it back, rename the game object, or change the "Tome Text" parameter to the new name for the game object.
+        contentText = uiPanel.transform.Find("Tome Text").GetComponent<Text>();
+
         if (uiPanel != null && contentText != null && uiPanel.activeSelf == false)
         {
             contentText.text = tomeContent; // Set the text box content

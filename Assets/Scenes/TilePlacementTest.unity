@@ -1105,7 +1105,7 @@ Transform:
   m_GameObject: {fileID: 657822682}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -4.77, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1113,83 +1113,6 @@ Transform:
   - {fileID: 447403962}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1017152151
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 3948471533597199441, guid: c998d5fdbe144d44cbd06fd3945333d6, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.2075
-      objectReference: {fileID: 0}
-    - target: {fileID: 3948471533597199441, guid: c998d5fdbe144d44cbd06fd3945333d6, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.2075
-      objectReference: {fileID: 0}
-    - target: {fileID: 3948471533597199441, guid: c998d5fdbe144d44cbd06fd3945333d6, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.2075
-      objectReference: {fileID: 0}
-    - target: {fileID: 3948471533597199441, guid: c998d5fdbe144d44cbd06fd3945333d6, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 3948471533597199441, guid: c998d5fdbe144d44cbd06fd3945333d6, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.18
-      objectReference: {fileID: 0}
-    - target: {fileID: 3948471533597199441, guid: c998d5fdbe144d44cbd06fd3945333d6, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.0018
-      objectReference: {fileID: 0}
-    - target: {fileID: 3948471533597199441, guid: c998d5fdbe144d44cbd06fd3945333d6, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3948471533597199441, guid: c998d5fdbe144d44cbd06fd3945333d6, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3948471533597199441, guid: c998d5fdbe144d44cbd06fd3945333d6, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3948471533597199441, guid: c998d5fdbe144d44cbd06fd3945333d6, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3948471533597199441, guid: c998d5fdbe144d44cbd06fd3945333d6, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3948471533597199441, guid: c998d5fdbe144d44cbd06fd3945333d6, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3948471533597199441, guid: c998d5fdbe144d44cbd06fd3945333d6, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5391477220597565118, guid: c998d5fdbe144d44cbd06fd3945333d6, type: 3}
-      propertyPath: popuptext
-      value: Text Text Text Text Text Text Text Text Text\n Text
-      objectReference: {fileID: 0}
-    - target: {fileID: 5391477220597565118, guid: c998d5fdbe144d44cbd06fd3945333d6, type: 3}
-      propertyPath: characterName
-      value: Name
-      objectReference: {fileID: 0}
-    - target: {fileID: 8617626721163586404, guid: c998d5fdbe144d44cbd06fd3945333d6, type: 3}
-      propertyPath: m_Name
-      value: NPC Test
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: c998d5fdbe144d44cbd06fd3945333d6, type: 3}
 --- !u!1 &1077853655
 GameObject:
   m_ObjectHideFlags: 0
@@ -1205,7 +1128,7 @@ GameObject:
   - component: {fileID: 1077853660}
   m_Layer: 0
   m_Name: Collectible_Flower
-  m_TagString: Untagged
+  m_TagString: NPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1315,12 +1238,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1077853655}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30581b81bb88e87489b050f682cad4a7, type: 3}
+  m_Script: {fileID: 11500000, guid: a2718778355600d43a9b4bbbcee498e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tomeContent: This is the content of the tome.
-  contentText: {fileID: 0}
-  outlineColor: {r: 0, g: 0, b: 0, a: 0}
+  popup: {fileID: 8616141986137131005, guid: bfdf6e1b0af68fa42b728269f42772b0, type: 3}
+  characterName: 
+  popuptext: test \n testststst
+  textSpeedMultiplier: 1
 --- !u!1 &1103166556
 GameObject:
   m_ObjectHideFlags: 0
@@ -2103,7 +2027,6 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 242956996}
-  - {fileID: 1017152151}
   - {fileID: 394314565}
   - {fileID: 32133923}
   - {fileID: 1103166561}
