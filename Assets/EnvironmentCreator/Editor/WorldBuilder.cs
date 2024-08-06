@@ -520,7 +520,6 @@ public class WorldBuilder : EditorWindow
                     } else if (tileCategory == TileCategory.CollectibleSpawner)
                     {
                         //find prefab for collectible menu and put it in
-
                         //If there is not a game object with the collectibles menu tag, then there is not a collectible UI. add one.
                         if (collectiblesMenu == null)
                         {
