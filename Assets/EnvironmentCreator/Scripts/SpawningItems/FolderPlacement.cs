@@ -33,6 +33,7 @@ public class FolderPlacement : MonoBehaviour
             {
                 //Make a new game object 
                 childWithTag = new GameObject(folderName);
+                childWithTag.tag = folderName;
                 childWithTag.transform.parent = parentOBJ.transform;
                 this.gameObject.transform.parent = childWithTag.transform;
             }
