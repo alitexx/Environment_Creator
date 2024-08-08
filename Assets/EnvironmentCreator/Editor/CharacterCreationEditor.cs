@@ -234,9 +234,9 @@ public class CharacterCreationEditor : EditorWindow
         BoxCollider2D boxCollider2D = ComponentHelper.GetOrAddComponent<BoxCollider2D>(npcGameObject);
 
         //Set Rigidbody settings so it doesnt have physics
-        rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
+        rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
         rigidbody2D.constraints = RigidbodyConstraints2D.FreezeRotation;
-        rigidbody2D.isKinematic = true;
+        rigidbody2D.isKinematic = false;
         rigidbody2D.gravityScale = 0;
 
 

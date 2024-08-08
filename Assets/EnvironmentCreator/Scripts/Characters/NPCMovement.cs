@@ -12,16 +12,19 @@ public class NPCMovement : MonoBehaviour
     public float waitTime = 1f;
     public bool isSetPositions;
     private Vector3 referenceSpace;
+    private Vector3 randomDirection;
 
     private int currentSetPositionIndex = 0;
     private Vector3 targetPosition;
 
     private Animator animator;
+    private Rigidbody2D rb;
 
     private void Start()
     {
         referenceSpace = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/EnvironmentCreator/Prefabs/ReferenceTile.prefab").transform.localScale;
         animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
 
         if (isSetPositions)
         {
@@ -50,11 +53,10 @@ public class NPCMovement : MonoBehaviour
         {
             if (!isPaused && isMoving)
             {
-                Vector3 randomDirection = GetRandomDirection();
+                yield return new WaitForSeconds(movementFrequency);
+                randomDirection = GetRandomDirection();
                 targetPosition = transform.position + randomDirection * referenceSpace.x;
                 yield return MoveToPosition(targetPosition);
-
-                yield return new WaitForSeconds(movementFrequency);
             }
             yield return null;
         }
@@ -103,7 +105,7 @@ public class NPCMovement : MonoBehaviour
                 yield return null;
 
             Vector3 direction = (position - transform.position).normalized;
-            transform.position = Vector3.MoveTowards(transform.position, position, movementSpeed * Time.deltaTime);
+            rb.MovePosition(transform.position + direction * movementSpeed * Time.deltaTime);
 
             // Update animator parameters
             animator.SetFloat("Horizontal", direction.x);
@@ -118,8 +120,21 @@ public class NPCMovement : MonoBehaviour
         animator.SetFloat("Speed", 0f);
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        //According to this code, the only thing that NPCs will not bounce off of are the player. If you wanted it to bounce off of fellow NPCs, you would add another and statement here.
+        if (!isSetPositions && !collision.collider.CompareTag("PlayerCharacter"))
+        {
+            // Reverse the current direction
+            randomDirection = -randomDirection;
+            targetPosition = transform.position + randomDirection * (referenceSpace.x / 2);
+            StopAllCoroutines();
+            StartCoroutine(MoveToPosition(targetPosition));
+            StartCoroutine(MoveRandomly());
+        }
+    }
 
-    //In case the NPC needs to be frozen (pause screen)
+    // In case the NPC needs to be frozen (pause screen)
     public void SetPause(bool pause)
     {
         isPaused = pause;

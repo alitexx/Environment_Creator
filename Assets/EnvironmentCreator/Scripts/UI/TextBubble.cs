@@ -56,7 +56,7 @@ public class TextBubble : MonoBehaviour
         foreach (char letter in segment.ToCharArray())
         {
             textMeshProUGUI.text += letter;
-            yield return new WaitForSeconds(typingSpeed * textSpeedMultiplier);
+            yield return new WaitForSeconds(typingSpeed / textSpeedMultiplier);
         }
         FinishTyping();
     }

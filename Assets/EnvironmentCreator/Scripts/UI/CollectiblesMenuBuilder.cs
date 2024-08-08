@@ -101,6 +101,7 @@ public class CollectiblesMenuBuilder : MonoBehaviour
 
         // Add an Image component to the new GameObject
         Image image = imageObject.AddComponent<Image>();
+        imageObject.GetComponent<RectTransform>().localScale = new Vector3(0.2f, 0.2f, 1f);
 
         // Get the SpriteRenderer from the collectible
         SpriteRenderer spriteRenderer = collectible.GetComponent<SpriteRenderer>();
