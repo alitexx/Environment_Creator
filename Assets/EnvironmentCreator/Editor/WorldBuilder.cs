@@ -650,5 +650,12 @@ public class WorldBuilder : EditorWindow
         // Position it at the camera's position
         background.transform.localPosition = new Vector3(0, 0, 10); // Keep it behind the camera view
         cameraBGsprite = background;
+
+        //Check if there's a player. If there is, get or set the camera movement script and assign the player
+        GameObject player = GameObject.FindGameObjectWithTag("PlayerCharacter");
+        if (player)
+        {
+            Camera.main.gameObject.GetOrAddComponent<CameraMovement>().player = player.transform;
+        }
     }
 }
