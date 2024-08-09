@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class Tome : MonoBehaviour
 {
     public string tomeContent = "This is the content of the tome.";
-    public static GameObject uiPanel; // Reference to the UI panel (Canvas)
+    public GameObject uiPanel; // Reference to the UI panel (Canvas)
     public Text contentText; // Reference to the text component in the panel
 
     private GameObject player;
@@ -44,9 +44,12 @@ public class Tome : MonoBehaviour
         outlineOBJ.SetActive(false);
 
 
+        //If the user has not attached a different UI, look for UI
+        if (!uiPanel)
+        {
+            uiPanel = GameObject.FindGameObjectWithTag("UI");
+        }
         //Looks for UI Panel in the scene. If it is not in the scene, creates it
-        uiPanel = GameObject.FindGameObjectWithTag("UI");
-        
         if (uiPanel != null)
         {
             

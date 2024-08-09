@@ -15,19 +15,19 @@ public class SoundEffectEditorWindow : EditorWindow
     private int selectedTrigger;
     private GameObject selectedObject;
 
-    [MenuItem("Window/Environment Creator/Sound Effect Editor")]
+    [MenuItem("Window/Environment Creator/Sound Editor")]
     public static void ShowWindow()
     {
-        GetWindow<SoundEffectEditorWindow>("Sound Effect Editor");
+        GetWindow<SoundEffectEditorWindow>("Sound Editor");
     }
 
     private void OnGUI()
     {
-        GUILayout.Label("Sound Effect Settings", EditorStyles.boldLabel);
+        GUILayout.Label("Sound Settings", EditorStyles.boldLabel);
 
         selectedObject = (GameObject)EditorGUILayout.ObjectField("Game Object", selectedObject, typeof(GameObject), true);
 
-        selectedClip = (AudioClip)EditorGUILayout.ObjectField("Sound Effect", selectedClip, typeof(AudioClip), false);
+        selectedClip = (AudioClip)EditorGUILayout.ObjectField("Sound", selectedClip, typeof(AudioClip), false);
 
         if (selectedClip != null)
         {
@@ -38,7 +38,7 @@ public class SoundEffectEditorWindow : EditorWindow
                 volume = EditorGUILayout.Slider("Volume", volume, 0f, 1f);
             }
 
-            isTriggered = GUILayout.Toggle(isTriggered, "Triggered");
+            isTriggered = GUILayout.Toggle(isTriggered, "Triggered/SFX");
             if (isTriggered)
             {
                 loop = GUILayout.Toggle(loop, "Loop");
