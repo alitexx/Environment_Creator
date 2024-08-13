@@ -199,10 +199,12 @@ public class CollectiblesMenuBuilder : MonoBehaviour
     public void OpenCollectibleMenu()
     {
         CollectibleMenu.SetActive(true);
+        PauseManager.FreezeAllMovingObject(true); //Freeze NPCs and Players
     }
 
     public void CloseCollectibleMenu()
     {
         CollectibleMenu.SetActive(false);
+        PauseManager.FreezeAllMovingObject(false); //Unfreeze NPCs and Players
     }
 }

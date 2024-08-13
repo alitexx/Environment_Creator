@@ -41,6 +41,8 @@ public class NPCInteract : MonoBehaviour
             TextBubble textTyper = popupInstance.GetComponent<TextBubble>();
             //send pop up text to text typer for it to display
             textTyper.Initialize(popuptext, textSpeedMultiplier);
+
+            PauseManager.FreezeAllMovingObject(true); //Freeze NPCs and Players
         }
     }
 }

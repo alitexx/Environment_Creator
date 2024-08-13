@@ -45,6 +45,7 @@ public class TextBubble : MonoBehaviour
         }
         else
         {
+            PauseManager.FreezeAllMovingObject(false); //Freeze NPCs and Players
             Destroy(gameObject);
         }
     }

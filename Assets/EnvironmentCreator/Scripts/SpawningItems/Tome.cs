@@ -111,6 +111,7 @@ public class Tome : MonoBehaviour
         {
             contentText.text = tomeContent; // Set the text box content
             uiPanel.SetActive(true); // Show the UI panel
+            PauseManager.FreezeAllMovingObject(true); //Freeze NPCs and Players
         }
     }
 }

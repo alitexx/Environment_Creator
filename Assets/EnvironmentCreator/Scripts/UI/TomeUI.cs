@@ -15,5 +15,6 @@ public class TomeUI : MonoBehaviour
     public void CloseUI()
     {
         gameObject.SetActive(false);
+        PauseManager.FreezeAllMovingObject(false); //Unfreeze NPCs and Players
     }
 }
