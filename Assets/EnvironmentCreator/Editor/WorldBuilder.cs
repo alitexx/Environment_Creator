@@ -116,6 +116,10 @@ public class WorldBuilder : EditorWindow
         // Create a draggable object field
         var objectField2 = new ObjectField("Reference Tile") { objectType = typeof(GameObject) };
         tileReferenceSize = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/EnvironmentCreator/Prefabs/ReferenceTile.prefab");
+        if (!tileReferenceSize)
+        {
+            Debug.LogError("Reference tile not found! Please make sure there is an image in the reference tile, and the reference tile is located at [Assets/EnvironmentCreator/Prefabs/ReferenceTile.prefab].");
+        }
         objectField2.value = tileReferenceSize;
         tilePlacement.placementBounds = tileReferenceSize.GetComponent<SpriteRenderer>().bounds;
         tilePlacement.xDimension = tilePlacement.placementBounds.size.x / 2;
