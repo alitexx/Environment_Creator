@@ -47,6 +47,7 @@ public class WorldBuilder : EditorWindow
     private string spawnedItem = "Default";
     private Transform teleportDestination;
     private GameObject collectiblesMenu;
+    private GameObject TomeUI;
 
     private bool allowPlacementBool = true;
 
@@ -541,6 +542,22 @@ public class WorldBuilder : EditorWindow
                             }
                         }
                     }
+                    else if (tileCategory == TileCategory.TomeSpawner)
+                    {
+                        //Similar to CollectibleUI, but add a UI each time a tome is spawned
+                        TomeUI = Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/EnvironmentCreator/Prefabs/UI/Tome UI.prefab"), Vector3.zero, Quaternion.identity);
+                        TomeUI.tag = "UI";
+                        TomeUI.name = spawnedItem + "_UI";
+                        // Check if there is already an EventSystem in the scene
+                        EventSystem eventSystem = FindObjectOfType<EventSystem>();
+                        // If not, create a new EventSystem
+                        if (eventSystem == null)
+                        {
+                            GameObject eventSystemObject = new GameObject("EventSystem");
+                            eventSystemObject.AddComponent<EventSystem>();
+                            eventSystemObject.AddComponent<StandaloneInputModule>();
+                        }
+                    }
                     instance.GetComponent<tileCategory>().SetValuesWhenPlaced(tileCategory, canCollide, spawnedItem);
                 } else
                 {
@@ -620,6 +637,7 @@ public class WorldBuilder : EditorWindow
         {
             // If it doesn't have any children, destroy the parent object
             DestroyImmediate(parentOBJ);
+            parentOBJ.tag = null;
             parentOBJ = null;
         }
     }

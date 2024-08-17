@@ -15,6 +15,7 @@ TagManager:
   - Collectible
   - TeleporterFade
   - UI
+  - Tome
   layers:
   - Default
   - TransparentFX

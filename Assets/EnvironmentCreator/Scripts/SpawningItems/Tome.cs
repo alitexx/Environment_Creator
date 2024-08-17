@@ -1,12 +1,13 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Tome : MonoBehaviour
 {
     public string tomeContent = "This is the content of the tome.";
     public GameObject uiPanel; // Reference to the UI panel (Canvas)
-    public Text contentText; // Reference to the text component in the panel
+    public TextMeshProUGUI contentText; // Reference to the text component in the panel
 
     private GameObject player;
     private float range;
@@ -45,16 +46,21 @@ public class Tome : MonoBehaviour
 
 
         //If the user has not attached a different UI, look for UI
-        if (!uiPanel)
+        if (uiPanel == null)
         {
             uiPanel = GameObject.FindGameObjectWithTag("UI");
+        }
+        if (contentText == null)
+        {
+            contentText = uiPanel.transform.Find("Tome Text").GetComponent<TextMeshProUGUI>();
         }
         //Looks for UI Panel in the scene. If it is not in the scene, creates it
         if (uiPanel != null)
         {
-            
+
             uiPanel.SetActive(false); // Hide the UI panel initially
-        } else
+        }
+        else
         {
             //create a UI panel from a prefab
             uiPanelPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/EnvironmentCreator/Prefabs/UI/Tome UI.prefab");
@@ -67,12 +73,17 @@ public class Tome : MonoBehaviour
             try
             {
                 uiPanel.transform.SetParent(GameObject.Find("UI").transform);
-            } catch
+            }
+            catch
             {
                 uiPanel.transform.SetParent(new GameObject("UI").transform);
             }
+            contentText = uiPanel.transform.Find("Tome Text").GetComponent<TextMeshProUGUI>();
             uiPanel.SetActive(false);
+
         }
+
+
     }
 
     // Called every frame. Checks if the item has been clicked, and if so, tries to collect the item
@@ -81,7 +92,6 @@ public class Tome : MonoBehaviour
         if (player != null)
         {
             float distance = Vector3.Distance(player.transform.position, transform.position);
-
             if (distance <= range)
             {
                 outlineOBJ.SetActive(true);
@@ -102,17 +112,18 @@ public class Tome : MonoBehaviour
     // To find the close UI script, go to EnvironmentCreator/Scripts/TomeUI
     void OpenMenu()
     {
-        // This code will break if Tome Text is renamed.
-        // If you are getting an error about this line of code, it is likely because Tome Text has been moved.
-        // Either move it back, rename the game object, or change the "Tome Text" parameter to the new name for the game object.
-        contentText = uiPanel.transform.Find("Tome Text").GetComponent<Text>();
-
-        if (uiPanel != null && contentText != null && uiPanel.activeSelf == false)
+        if (contentText == null)
         {
-            contentText.text = tomeContent; // Set the text box content
+            Debug.LogError("Text component not found in Tome Text or any of its children!");
+            return;
+        }
+        if (uiPanel != null && uiPanel.activeSelf == false)
+        {
             uiPanel.SetActive(true); // Show the UI panel
+            contentText.text = tomeContent; // Set the text box content
             PauseManager.FreezeAllMovingObject(true); //Freeze NPCs and Players
         }
     }
 }
+
 
