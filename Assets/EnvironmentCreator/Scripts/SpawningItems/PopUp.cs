@@ -5,6 +5,7 @@ public class PopUp : MonoBehaviour
     private GameObject player;
     private float range;
     private SpriteRenderer spriteRenderer;
+    private Transform associatedObjPos;
     private Transform[] childTransforms;
 
     void Start()
@@ -13,13 +14,14 @@ public class PopUp : MonoBehaviour
         range = GameSettings.interactRange;
         spriteRenderer = GetComponent<SpriteRenderer>();
         childTransforms = GetComponentsInChildren<Transform>();
+        associatedObjPos = this.GetComponent<FolderPlacement>().associatedGameObject.transform;
     }
 
     void Update()
     {
         if (player != null)
         {
-            float distance = Vector3.Distance(player.transform.position, transform.position);
+            float distance = Vector3.Distance(player.transform.position, associatedObjPos.position);
             if (distance <= range)
             {
                 SetChildrenActive(true);
